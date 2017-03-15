@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+	<persistence-unit-metadata>
+		<xml-mapping-metadata-complete/>
+		<persistence-unit-defaults>
+			<access>PROPERTY</access>
+		</persistence-unit-defaults>
+	</persistence-unit-metadata>
+	<mapped-superclass class="com.ms3.training.services.model.impl.AssignmentModelImpl">
+		<attributes>
+			<id name="assignmentId" />
+			<basic name="courses_title" />
+			<basic name="ms3employeedb_uid" />
+			<basic name="startDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="endDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="notes" />
+			<basic name="cost" />
+			<basic name="certification" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
+	<mapped-superclass class="com.ms3.training.services.model.impl.CourseModelImpl">
+		<attributes>
+			<id name="title" />
+			<basic name="description" />
+			<basic name="listPrice" />
+			<basic name="provider" />
+			<basic name="courseId" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
+	<entity class="com.ms3.training.services.model.impl.AssignmentImpl" name="Assignment">
+		<table name="course_Assignment" />
+		<attributes />
+	</entity>
+	<entity class="com.ms3.training.services.model.impl.CourseImpl" name="Course">
+		<table name="course_Course" />
+		<attributes />
+	</entity>
+</entity-mappings>

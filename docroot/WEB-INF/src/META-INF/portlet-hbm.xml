@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false" auto-import="false">
+	<import class="com.ms3.training.services.model.Assignment" />
+	<import class="com.ms3.training.services.model.Course" />
+	<class name="com.ms3.training.services.model.impl.AssignmentImpl" table="course_Assignment">
+		<cache usage="read-write" />
+		<id name="assignmentId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="courses_title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="ms3employeedb_uid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="startDate" type="org.hibernate.type.TimestampType" />
+		<property name="endDate" type="org.hibernate.type.TimestampType" />
+		<property name="notes" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="cost" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="certification" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+	<class name="com.ms3.training.services.model.impl.CourseImpl" table="course_Course">
+		<cache usage="read-write" />
+		<id name="title" type="java.lang.String">
+			<generator class="assigned" />
+		</id>
+		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="listPrice" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="provider" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="courseId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+</hibernate-mapping>

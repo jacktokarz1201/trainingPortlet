@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<bean id="com.ms3.training.services.service.AssignmentLocalService" class="com.ms3.training.services.service.impl.AssignmentLocalServiceImpl" />
+	<bean id="com.ms3.training.services.service.AssignmentService" class="com.ms3.training.services.service.impl.AssignmentServiceImpl" />
+	<bean id="com.ms3.training.services.service.persistence.AssignmentPersistence" class="com.ms3.training.services.service.persistence.AssignmentPersistenceImpl" parent="basePersistence" />
+	<bean id="com.ms3.training.services.service.CourseLocalService" class="com.ms3.training.services.service.impl.CourseLocalServiceImpl" />
+	<bean id="com.ms3.training.services.service.CourseService" class="com.ms3.training.services.service.impl.CourseServiceImpl" />
+	<bean id="com.ms3.training.services.service.persistence.CoursePersistence" class="com.ms3.training.services.service.persistence.CoursePersistenceImpl" parent="basePersistence" />
+</beans>
