@@ -1,12 +1,23 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-Here's content!
-</body>
-</html>
+<%@include file="/html/init.jsp" %>
+
+
+<portlet:actionURL var="editCourse">
+   <portlet:param name="action" value="editCourse" />
+</portlet:actionURL>
+
+<%
+	PortletPreferences prefs = renderRequest.getPreferences();
+	String greeting = (String)prefs.getValue("greeting","");
+
+%>
+
+<p><%=greeting%></p>
+
+<aui:form name="addCourse" action="<%=editCourse%>">
+	<aui:input name="title" title="title" type="text"/>
+	<aui:input name="description" title="description" type="text"/>
+	<aui:input name="provider" title="provider" type="text"/>
+	<aui:input name="listPrice" title="price" type="text"/>
+	
+	<input type="submit" />
+</aui:form>

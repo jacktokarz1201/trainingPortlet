@@ -1,4 +1,4 @@
-<%@include file="/html/interaction/init.jsp" %>
+<%@include file="/html/init.jsp" %>
 
 <portlet:renderURL var ="home">
 	<portlet:param name="mvcPath" value="/html/interaction/view.jsp"/>
