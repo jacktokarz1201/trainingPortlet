@@ -4,9 +4,16 @@
 
 
 <%@ page import="java.util.List" %>
-<%@ page import="com.ms3.training.services.model.Course" %>
-<%@ page import="com.ms3.training.services.service.CourseLocalServiceUtil" %>
+<%@ page import= "java.util.ArrayList" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
-
+<%@ page import= "com.liferay.portal.service.UserLocalServiceUtil" %>
+<%@ page import= "com.liferay.portal.kernel.dao.orm.QueryUtil" %>
+<%@ page import= "com.liferay.portal.model.User" %>
+<%@ page import= "com.liferay.portal.theme.ThemeDisplay" %>
+<%@ page import= "com.liferay.portal.kernel.util.WebKeys" %>
+<%@ page import="com.ms3.training.services.model.Course" %>
+<%@ page import="com.ms3.training.services.model.Assignment" %>
+<%@ page import="com.ms3.training.services.service.CourseLocalServiceUtil" %>
+<%@ page import="com.ms3.training.services.service.AssignmentLocalServiceUtil" %>
 
 <portlet:defineObjects />

@@ -25,6 +25,7 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
+import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -35,6 +36,7 @@ import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -53,7 +55,7 @@ public class CourseController extends MVCPortlet {
 	public String processRenderRequest(RenderRequest request,
 			RenderResponse response, Model model) {		
 		PortletPreferences prefs = request.getPreferences();
-	//for permission and stuff
+//for permission and stuff
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		User user = themeDisplay.getUser();
@@ -87,7 +89,6 @@ public class CourseController extends MVCPortlet {
 			e.printStackTrace();
 		}
 		
-	
 //  }
 		String fromString = (String)request.getAttribute("fromAction");
 		if(fromString!=null) {
@@ -113,6 +114,10 @@ public class CourseController extends MVCPortlet {
 		if(assignCourseString!=null) {
 			return "assignCourse";
 		}
+		String personalAssignmentsString = (String)request.getAttribute("goToPersonalAssignments");
+		if(personalAssignmentsString!=null) {
+			return "personalAssignments";
+		}
 		
 		return "view";
 	}
@@ -130,37 +135,55 @@ public class CourseController extends MVCPortlet {
 		
 	}
 	
+	@ActionMapping(params = "action=personalAssignmentsPage")
+	public void personalAssignmentsPage(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		request.setAttribute("goToPersonalAssignments", "true");
+		
+	}
+	
+	
 	@ActionMapping(params = "action=assignToUser")
 	public void assignToUser(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
-		String user = request.getParameter("user");
-	//later add a getUser(user) check here
-		String title = prefs.getValue("assignTitle", "");
-System.out.println("User is "+user+", and title is "+title);
-		Course course = CourseLocalServiceUtil.getCourse(title);
-	//check that the course and user are filled / exist
-		if(user==null || user=="" || course==null) {
-			prefs.setValue("assignError", "Either the title or user isn't assigned.");
+		String screenName = request.getParameter("user");
+		if(screenName == null || screenName.equals("")) {
+			prefs.setValue("assignError", "Please fill in a screen name for the assignment.");
 			prefs.store();
 			request.setAttribute("goToAssignCourse", "true");
 			return;
 		}
-	//make the assignment, with Id one higher than the existing highest
-		long assignmentId = (long)AssignmentLocalServiceUtil.getAssignmentsCount();
-		if(assignmentId > 0) {
-			List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
-			for(Assignment assignment: assignments) {
-				if(assignmentId <= assignment.getAssignmentId()) {
-					assignmentId = assignment.getAssignmentId()+1;
+		Long companyId = CompanyThreadLocal.getCompanyId();
+		try {
+			User user = UserLocalServiceUtil.getUserByScreenName(companyId, screenName);
+			String title = prefs.getValue("assignTitle", "");
+	System.out.println("User is "+user+", and title is "+title);
+	
+//this could need a try/catch in the future
+			Course course = CourseLocalServiceUtil.getCourse(title);		
+		//make the assignment, with Id one higher than the existing highest
+			long assignmentId = (long)AssignmentLocalServiceUtil.getAssignmentsCount();
+			if(assignmentId > 0) {
+				List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
+				for(Assignment assignment: assignments) {
+					if(assignmentId <= assignment.getAssignmentId()) {
+						assignmentId = assignment.getAssignmentId()+1;
+					}
 				}
 			}
+			Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
+			assignment.setStartDate(setDate());
+			assignment.setCourses_title(title);
+			assignment.setMs3employeedb_uid(screenName);
+			AssignmentLocalServiceUtil.addAssignment(assignment);
+			System.out.println("Assignment added, total is --> "+AssignmentLocalServiceUtil.getAssignmentsCount());
 		}
-		Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
-		assignment.setStartDate(setDate());
-		assignment.setCourses_title(title);
-		assignment.setMs3employeedb_uid(user);
-		AssignmentLocalServiceUtil.addAssignment(assignment);
-		System.out.println("Assignment added, total is --> "+AssignmentLocalServiceUtil.getAssignmentsCount());
+		catch (NoSuchUserException e) {
+			prefs.setValue("assignError", "There are no users by that screen name.");
+			prefs.store();
+			request.setAttribute("goToAssignCourse", "true");
+			return;
+		}
 	}
 	
 	public Date setDate() {

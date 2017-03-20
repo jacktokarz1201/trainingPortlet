@@ -13,10 +13,9 @@
 <portlet:actionURL var="assignCoursePage">
    <portlet:param name="action" value="assignCoursePage" />
 </portlet:actionURL>
-<portlet:actionURL var="assignCoursePage">
-   <portlet:param name="action" value="assignCoursePage" />
+<portlet:actionURL var="personalAssignmentsPage">
+   <portlet:param name="action" value="personalAssignmentsPage" />
 </portlet:actionURL>
-
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String addCourseError = (String)prefs.getValue("addCourseError","");
@@ -131,6 +130,9 @@
 	<p id="selectedProvider">Provider: ""</p>
 	<p id="selectedCourseId">Course ID: ""</p>
 </div>
+
+<aui:a href="<%= personalAssignmentsPage %>">Check out which courses are assigned to you.</aui:a>
+
 
 <script>
 
