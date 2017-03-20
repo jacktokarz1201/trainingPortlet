@@ -7,11 +7,11 @@
 
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
-	String greeting = (String)prefs.getValue("greeting","");
+	String editCourseError = (String)prefs.getValue("editCourseError","");
 
 %>
 
-<p><%=greeting%></p>
+<p><%=editCourseError%></p>
 
 <aui:form name="addCourse" action="<%=editCourse%>">
 	<aui:input name="title" title="title" type="text"/>

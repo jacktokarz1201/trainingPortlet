@@ -10,22 +10,25 @@
 <portlet:actionURL var="findCourseByTitle">
    <portlet:param name="action" value="findCourseByTitle" />
 </portlet:actionURL>
+<portlet:actionURL var="assignCoursePage">
+   <portlet:param name="action" value="assignCoursePage" />
+</portlet:actionURL>
+<portlet:actionURL var="assignCoursePage">
+   <portlet:param name="action" value="assignCoursePage" />
+</portlet:actionURL>
 
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
-	String title = (String)prefs.getValue("title","");
+	String addCourseError = (String)prefs.getValue("addCourseError","");
 
 %>
 
-<p><%=title%></p>
-
-This is the portlet in HTML folder.
-
+<p><%= addCourseError %></p>
 <aui:form name="addCourse" action="<%=addCourse%>">
-	<aui:input name="title" title="title" type="text"/>
-	<aui:input name="description" title="description" type="text"/>
-	<aui:input name="provider" title="provider" type="text"/>
-	<aui:input name="price" title="price" type="text"/>
+	<aui:input name="title" type="text"/>
+	<aui:input name="description" type="text"/>
+	<aui:input name="provider" type="text"/>
+	<aui:input name="listPrice" type="text"/>
 	
 	<input id="submitCourse" type="submit" style="display:none;"/>
 	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
@@ -33,19 +36,72 @@ This is the portlet in HTML folder.
 
 <aui:a href="<%= viewCourses %>">Edit a course</aui:a>
 
+<!-- display the courses in a table, hopefully -->
+
+<div id="allCoursesDisplay">
+<table class="listTable">
+	<tr>
+		<td>
+			<p>Title: </p>
+		</td>
+		<td>
+			<p>Description: </p>
+		</td>
+		<td>
+			<p>Provider: </p>
+		</td>
+		<td>
+			<p>Course ID: </p>
+		</td>
+		<td>
+			<p>List Price: </p>
+		</td>
+		<td>
+			<p>Assign to Employee</p>
+		</td>
+	</tr>
+
 <%
 	List<Course> courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
+	int i = 0;
 	for(Course course: courses) {
+		String courseTitle = course.getTitle();
 %>
-<div id="allCoursesDisplay">
-	<p>Title: "<%=course.getTitle() %>"</p>
-	<p>Description: "<%=course.getDescription() %>"</p>
-	<p>Provider: "<%=course.getProvider() %>"</p>
-	<p>Course ID: "<%=course.getCourseId() %>"</p>
-</div>
+		
+	<tr>
+		<td>
+			<div><%=courseTitle %></div>
+		</td>
+		<td>
+			<div><%=course.getDescription() %></div>
+		</td>
+		<td>
+			<div><%=course.getProvider() %></div>
+		</td>
+		<td>
+			<div><%=course.getCourseId() %></div>
+		</td>
+		<td>
+			<div><%=course.getListPrice() %></div>
+		</td>
+		<td>
+				<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
+					<aui:input name="count" type="text" value="<%= i %>" />
+					<input id="theCount" value="<%= i %>" />
+					<input id="doAssign" type="submit" style="display:none;" />
+					<aui:input name="assigning" value="Submit"/>
+				</aui:form>
+		</td>
+	</tr>
+
 <%
+		i++;
 	}
 %>
+
+</table>
+</div>
+
 
 <p id="error"></p>
 

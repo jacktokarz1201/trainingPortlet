@@ -26,7 +26,9 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
+import com.ms3.training.services.NoSuchCourseException;
 import com.ms3.training.services.model.Course;
+import com.ms3.training.services.service.AssignmentLocalServiceUtil;
 import com.ms3.training.services.service.CourseLocalServiceUtil;
 
 
@@ -53,28 +55,83 @@ public class CourseController extends MVCPortlet {
 			SessionErrors.add(request, "errorGetCourses");
 			e.printStackTrace();
 		}
+	//Where are we going?
 		String viewString = (String)request.getAttribute("viewCall");
 		if(viewString!=null) {
 			return "other";
+		}
+		String assignCourseString = (String)request.getAttribute("goToAssignCourse");
+		if(assignCourseString!=null) {
+			return "assignCourse";
 		}
 		
 		return "view";
 	}
 
 	
+	@ActionMapping(params = "action=assignCoursePage")
+	public void assignCoursePage(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+	System.out.println("Passed to assignCoursePage --> "+prefs.getValue("assignTitle", ""));
+//		prefs.setValue("assignTitle", request.getParameter("assignTitle"));
+//		prefs.store();
+		request.setAttribute("goToAssignCourse", "true");
+		
+	}
+	
+	@ActionMapping(params = "action=assignToUser")
+	public void assignToUser(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		
+		String user = request.getParameter("user");
+		String title = request.getParameter("assignTitle");
+		System.out.println("User is "+user+", and title is "+title);
+		//AssignmentLocalServiceUtil.addAssignment(assignment);
+		if(user==null || title==null) {
+			prefs.setValue("assignError", "Either the title or user isn't assigned.");
+			prefs.store();
+			request.setAttribute("goToAssignCourse", "true");
+		}
+		
+	}
+	
 	@ActionMapping(params = "action=addCourse")
 	public void addCourse(ActionRequest request, ActionResponse response){
 		SessionMessages.add(request, PortalUtil.getPortletId(request) + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 		
+		PortletPreferences prefs = request.getPreferences();
+		
 		try {
-			long courseId = CourseLocalServiceUtil.getCoursesCount()+1;
-			System.out.println("courseId is 1 more than courses count, ie: "+courseId);
+	//take all inputs into strings
 			String title = request.getParameter("title");
-			
 			String description = request.getParameter("description");
-			String provider = request.getParameter("provider");		
+			String provider = request.getParameter("provider");
 			String listPrice = request.getParameter("listPrice");
+	//CHECK all fields are filled in.
+			if(title.equals("") || description.equals("") || provider.equals("") || listPrice.equals("")) {
+				prefs.setValue("addCourseError", "Make sure to fill in all of the fields.");
+				prefs.store();
+				return;
+			}
 			
+			List<Course> courseResults = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
+			long highestId = CourseLocalServiceUtil.getCoursesCount();
+			for(Course course: courseResults) {
+				
+	//CHECK the entered title doesn't already exist.
+				if(title.equals(course.getTitle())) {
+					prefs.setValue("addCourseError", "That title has already been used.");
+					prefs.store();
+					return;
+				}
+	//CHECK the new course id isn't used and is higher than the rest.
+				if(highestId <= course.getCourseId()) {
+					highestId = course.getCourseId();
+				}
+			}
+			
+			long courseId = highestId;
+	//set a new course with these values and add it to the table.
 			Course course = CourseLocalServiceUtil.createCourse(title);
 			course.setTitle(title);
 			course.setCourseId(courseId);
@@ -82,8 +139,10 @@ public class CourseController extends MVCPortlet {
 			course.setProvider(provider);
 			course.setListPrice(listPrice);
 			CourseLocalServiceUtil.updateCourse(course);
-			
 			SessionMessages.add(request, "successAddCourse");
+	//clear the error message
+			prefs.setValue("addCourseError", "");
+			prefs.store();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -98,31 +157,33 @@ public class CourseController extends MVCPortlet {
 		String searchCriteria = request.getParameter("searchTitle");
 		
 		PortletPreferences prefs = request.getPreferences();
-		String title= request.getParameter("searchTitle");
-		if( title != null) {
-			prefs.setValue("title", title);
-			prefs.store();
-		}
-		
+	//CHECK there is title input
 		if(searchCriteria == null) {
-			System.out.println("You must put in a query to get a result.");
+			prefs.setValue("findCourseError", "You must put in a query to get a result.");
+			prefs.store();
 			return;
 		}
 		request.setAttribute("fromAction", searchCriteria);
 		try {
 			if(CourseLocalServiceUtil.getCoursesCount()==0) {
-				System.out.println("There are no courses to view.");
+	//CHECK some courses exist
+				prefs.setValue("findCourseError", "There are no stored courses.");
+				prefs.store();
 				return;
 			}
 			courseResults = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
+	//CHECK title against all existing ones
 			for(Course objectCourse: courseResults) {
 				if(objectCourse.getTitle().equals(searchCriteria)) {
 					System.out.println("You found it! \n courseId: "+objectCourse.getCourseId()+" \ncourseName: "+objectCourse.getTitle()+
 							" \ncourseDescription: "+objectCourse.getDescription()+" \netc...\n");
+					prefs.setValue("findCourseError", "");
+					prefs.store();
 					return;
 				}
 			}
-			System.out.println("That course is not in our catalog.");
+			prefs.setValue("findCourseError", "A course by that title does not exist in our catalog.");
+			prefs.store();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -133,9 +194,20 @@ public class CourseController extends MVCPortlet {
 	
 	
 	@ActionMapping(params = "action=editCourse")
-	public void editCourse(ActionRequest request, ActionResponse response){
+	public void editCourse(ActionRequest request, ActionResponse response) 
+			throws PortletException, PortalException, SystemException, IOException{
+		
+		PortletPreferences prefs = request.getPreferences();
 		
 		String title = request.getParameter("title");
+	//CHECK if they put in a title
+		if(title==null) {
+			prefs.setValue("editCourseError", "Put in a title.");
+			prefs.store();
+			request.setAttribute("viewCall", "viewTime");
+			return;
+		}
+		
 		Course course;
 		try {
 			course = CourseLocalServiceUtil.getCourse(title);
@@ -149,16 +221,16 @@ public class CourseController extends MVCPortlet {
 				course.setProvider(request.getParameter("provider"));
 			}
 			
-			CourseLocalServiceUtil.updateCourse(course);
-		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CourseLocalServiceUtil.updateCourse(course);	
+			prefs.setValue("editCourseError", "");
+			prefs.store();
 		}
-		
-		
+		catch (NoSuchCourseException e) {
+			prefs.setValue("editCourseError", "A course by that title is not in the catalog.");
+			prefs.store();
+			request.setAttribute("viewCall", "viewTime");
+			return;
+		}
 	}
 	
 	
@@ -178,11 +250,7 @@ public class CourseController extends MVCPortlet {
 			//DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(Course.class).add(PropertyFactoryUtil.forName("courseId").eq(new Long(courseId)));
 			//courses = CourseLocalServiceUtil.dynamicQuery(dynamicQuery,0,CourseLocalServiceUtil.getCoursesCount());
 			//courses = CourseLocalServiceUtil.findByCourseId(courseId);
-			
-			if(CourseLocalServiceUtil.getCoursesCount()==0) {
-				System.out.println("There are no courses to view.");
-				return;
-			}
+
 			
 			courseResults = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
 			//System.out.println("objectCourseResults.size: "+objectCourseResults.size());
