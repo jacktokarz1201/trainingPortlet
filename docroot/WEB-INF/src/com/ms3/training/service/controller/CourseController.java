@@ -1,6 +1,10 @@
 package com.ms3.training.service.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -12,6 +16,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+import javax.portlet.ValidatorException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +25,21 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.Organization;
+import com.liferay.portal.model.User;
+import com.liferay.portal.security.auth.CompanyThreadLocal;
+import com.liferay.portal.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.ms3.training.services.NoSuchCourseException;
+import com.ms3.training.services.model.Assignment;
 import com.ms3.training.services.model.Course;
 import com.ms3.training.services.service.AssignmentLocalServiceUtil;
 import com.ms3.training.services.service.CourseLocalServiceUtil;
@@ -39,7 +52,43 @@ public class CourseController extends MVCPortlet {
 	@RenderMapping
 	public String processRenderRequest(RenderRequest request,
 			RenderResponse response, Model model) {		
+		PortletPreferences prefs = request.getPreferences();
+	//for permission and stuff
+//  {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		User user = themeDisplay.getUser();
+		try {
+			List<Organization> organizations = OrganizationLocalServiceUtil.getOrganizations(user.getUserId(), 0, QueryUtil.ALL_POS, null);
+			Long companyId = CompanyThreadLocal.getCompanyId();
+			Organization trainingSupervisorOrg = OrganizationLocalServiceUtil.getOrganization(companyId, "TrainingSupervisor");
+			prefs.setValue("isTrainingSupervisor", "false");
+			for(Organization org: organizations){
+	            if(org.getOrganizationId()==trainingSupervisorOrg.getOrganizationId()){                    
+	                prefs.setValue("isTrainingSupervisor", "true"); //flag to determine if he's in trainee organization    
+	                break;
+	            }
+	        }
+			prefs.store();
+	System.out.println("This is a Training Supervisor: "+prefs.getValue("isTrainingSupervisor", ""));
+		} catch (PortalException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SystemException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ReadOnlyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ValidatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+	
+//  }
 		String fromString = (String)request.getAttribute("fromAction");
 		if(fromString!=null) {
 			System.out.println("From Action was passed! --> "+fromString);
@@ -72,9 +121,11 @@ public class CourseController extends MVCPortlet {
 	@ActionMapping(params = "action=assignCoursePage")
 	public void assignCoursePage(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
-	System.out.println("Passed to assignCoursePage --> "+prefs.getValue("assignTitle", ""));
-//		prefs.setValue("assignTitle", request.getParameter("assignTitle"));
-//		prefs.store();
+		System.out.println("Passed to submitTitle -> "+request.getParameter("submitTitle"));
+//	System.out.println("Passed to assignCoursePage --> "+prefs.getValue("assignTitle", ""));
+		prefs.setValue("assignTitle", request.getParameter("submitTitle"));
+		prefs.setValue("assignError", "");
+		prefs.store();
 		request.setAttribute("goToAssignCourse", "true");
 		
 	}
@@ -82,18 +133,45 @@ public class CourseController extends MVCPortlet {
 	@ActionMapping(params = "action=assignToUser")
 	public void assignToUser(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
-		
 		String user = request.getParameter("user");
-		String title = request.getParameter("assignTitle");
-		System.out.println("User is "+user+", and title is "+title);
-		//AssignmentLocalServiceUtil.addAssignment(assignment);
-		if(user==null || title==null) {
+	//later add a getUser(user) check here
+		String title = prefs.getValue("assignTitle", "");
+System.out.println("User is "+user+", and title is "+title);
+		Course course = CourseLocalServiceUtil.getCourse(title);
+	//check that the course and user are filled / exist
+		if(user==null || user=="" || course==null) {
 			prefs.setValue("assignError", "Either the title or user isn't assigned.");
 			prefs.store();
 			request.setAttribute("goToAssignCourse", "true");
+			return;
 		}
-		
+	//make the assignment, with Id one higher than the existing highest
+		long assignmentId = (long)AssignmentLocalServiceUtil.getAssignmentsCount();
+		if(assignmentId > 0) {
+			List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
+			for(Assignment assignment: assignments) {
+				if(assignmentId <= assignment.getAssignmentId()) {
+					assignmentId = assignment.getAssignmentId()+1;
+				}
+			}
+		}
+		Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
+		assignment.setStartDate(setDate());
+		assignment.setCourses_title(title);
+		assignment.setMs3employeedb_uid(user);
+		AssignmentLocalServiceUtil.addAssignment(assignment);
+		System.out.println("Assignment added, total is --> "+AssignmentLocalServiceUtil.getAssignmentsCount());
 	}
+	
+	public Date setDate() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yy");
+	    Date dateobj = new Date();
+	    System.out.println(df.format(dateobj));
+	    Calendar calobj = Calendar.getInstance();
+	    System.out.println(df.format(calobj.getTime()));
+	    return dateobj;
+	}
+	
 	
 	@ActionMapping(params = "action=addCourse")
 	public void addCourse(ActionRequest request, ActionResponse response){
@@ -126,7 +204,7 @@ public class CourseController extends MVCPortlet {
 				}
 	//CHECK the new course id isn't used and is higher than the rest.
 				if(highestId <= course.getCourseId()) {
-					highestId = course.getCourseId();
+					highestId = course.getCourseId() + 1;
 				}
 			}
 			

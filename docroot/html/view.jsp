@@ -20,7 +20,9 @@
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String addCourseError = (String)prefs.getValue("addCourseError","");
-
+	String isTrainingSupervisor = (String)prefs.getValue("isTrainingSupervisor", "");
+	if(isTrainingSupervisor.equals("true")) {
+		//only the training supervisors can add or edit courses.
 %>
 
 <p><%= addCourseError %></p>
@@ -35,6 +37,11 @@
 </aui:form>
 
 <aui:a href="<%= viewCourses %>">Edit a course</aui:a>
+
+<%
+	}
+%>
+
 
 <!-- display the courses in a table, hopefully -->
 
@@ -56,21 +63,24 @@
 		<td>
 			<p>List Price: </p>
 		</td>
+<%
+	if(isTrainingSupervisor.equals("true")) {
+%>
 		<td>
 			<p>Assign to Employee</p>
 		</td>
 	</tr>
-
+<%
+	}
+%>
 <%
 	List<Course> courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
-	int i = 0;
 	for(Course course: courses) {
-		String courseTitle = course.getTitle();
 %>
 		
 	<tr>
 		<td>
-			<div><%=courseTitle %></div>
+			<div><%=course.getTitle() %></div>
 		</td>
 		<td>
 			<div><%=course.getDescription() %></div>
@@ -84,18 +94,21 @@
 		<td>
 			<div><%=course.getListPrice() %></div>
 		</td>
-		<td>
-				<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
-					<aui:input name="count" type="text" value="<%= i %>" />
-					<input id="theCount" value="<%= i %>" />
-					<input id="doAssign" type="submit" style="display:none;" />
-					<aui:input name="assigning" value="Submit"/>
-				</aui:form>
-		</td>
+<%
+		if(isTrainingSupervisor.equals("true")) {
+%>
+			<td>
+					<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
+						<aui:input name="submitTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
+						<input id="doAssign" type="submit" value="Assign"/>
+					</aui:form>
+			</td>
+<%
+		}
+%>
 	</tr>
 
 <%
-		i++;
 	}
 %>
 
