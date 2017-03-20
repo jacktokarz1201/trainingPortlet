@@ -13,7 +13,7 @@
 		}
 	}
 	
-	if(relevant == null) {
+	if(relevant.isEmpty()) {
 %>
 	<div>This user does not have any courses assigned to them.</div>
 <%	
