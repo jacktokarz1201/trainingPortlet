@@ -17,3 +17,9 @@
 <%@ page import="com.ms3.training.services.service.AssignmentLocalServiceUtil" %>
 
 <portlet:defineObjects />
+
+<portlet:renderURL var ="home">
+	<portlet:param name="mvcPath" value="/html/interaction/view.jsp"/>
+</portlet:renderURL>
+
+<a class="headerHomeLink" href="<%=home%>">Go To Home</a>

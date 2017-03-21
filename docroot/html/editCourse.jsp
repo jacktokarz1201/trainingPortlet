@@ -13,7 +13,7 @@
 
 <p><%=editCourseError%></p>
 
-<aui:form name="addCourse" action="<%=editCourse%>">
+<aui:form name="editCourse" action="<%=editCourse%>">
 	<aui:input name="title" title="title" type="text"/>
 	<aui:input name="description" title="description" type="text"/>
 	<aui:input name="provider" title="provider" type="text"/>

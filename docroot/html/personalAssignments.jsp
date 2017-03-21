@@ -20,25 +20,77 @@
 	}
 	else {
 %>
+		<p>Assigned Courses</p>
 		<table class="listTable">
 			<tr>
 			    <th>Course Title</th>
 			    <th>Start Date</th>
 			    <th>End Date</th>
+			    <th>Notes</th>
 			</tr>
 <%
 		for(Assignment assignment: relevant) {
+			if(assignment.getStartDate()!=null && assignment.getEndDate() == null) {
 %>
 			<tr>
 			    <td><%= assignment.getCourses_title() %></td>
 			    <td><%= assignment.getStartDate() %></td>
 			    <td><%= assignment.getEndDate() %></td>
+			    <td><%= assignment.getNotes() %></td>
 			</tr>
 <%
+			}
+		}
+%>
+		</table>
+
+		<p>Requested Courses</p>
+		<table class="listTable">
+			<tr>
+			    <th>Course Title</th>
+			    <th>Start Date</th>
+			    <th>End Date</th>
+			    <th>Notes</th>
+			</tr>
+<%
+		for(Assignment assignment: relevant) {
+			if(assignment.getStartDate()==null && assignment.getNotes().equals("requested")) {
+%>
+			<tr>
+			    <td><%= assignment.getCourses_title() %></td>
+			    <td><%= assignment.getStartDate() %></td>
+			    <td><%= assignment.getEndDate() %></td>
+			    <td><%= assignment.getNotes() %></td>
+			</tr>
+<%
+			}
+		}
+%>
+		</table>
+
+		<p>Completed Courses</p>
+		<table class="listTable">
+			<tr>
+			    <th>Course Title</th>
+			    <th>Start Date</th>
+			    <th>End Date</th>
+			    <th>Notes</th>
+			</tr>
+<%
+		for(Assignment assignment: relevant) {
+			if(assignment.getEndDate()!= null) {
+%>
+			<tr>
+			    <td><%= assignment.getCourses_title() %></td>
+			    <td><%= assignment.getStartDate() %></td>
+			    <td><%= assignment.getEndDate() %></td>
+			    <td><%= assignment.getNotes() %></td>
+			</tr>
+<%
+			}
 		}
 %>
 		</table>
 <%
 	}
 %>
-
