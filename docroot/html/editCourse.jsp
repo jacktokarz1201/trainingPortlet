@@ -6,7 +6,6 @@
 </portlet:actionURL>
 
 <%
-	PortletPreferences prefs = renderRequest.getPreferences();
 	String editCourseError = (String)prefs.getValue("editCourseError","");
 
 %>

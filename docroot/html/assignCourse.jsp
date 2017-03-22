@@ -2,20 +2,26 @@
 <%@include file="/html/init.jsp" %>
 
 <%
-	PortletPreferences prefs = renderRequest.getPreferences();
+
 	String assignError = (String)prefs.getValue("assignError","");
 	String sentTitle = (String)prefs.getValue("assignTitle","");
 	Course course = CourseLocalServiceUtil.getCourse(sentTitle);
 	
 	List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
 	List<Assignment> relevant = new ArrayList<Assignment>();
-	List<User> users = UserLocalServiceUtil.getUsers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+	List<User> users = UserLocalServiceUtil.getUsers(0, UserLocalServiceUtil.getUsersCount());
 %>
 
 <portlet:actionURL var="assignToUser">
-   <portlet:param name="action" value="assignToUser" />
-   <portlet:param name="assignTitle" value="<%=sentTitle %>" />
+	<portlet:param name="action" value="assignToUser" />
 </portlet:actionURL>
+<portlet:actionURL var="viewUserAssignments">
+	<portlet:param name="action" value="viewUserAssignments" />
+</portlet:actionURL>
+<portlet:actionURL var="approveRequestFromAssign">
+	<portlet:param name="action" value="approveRequestFromAssign" />
+</portlet:actionURL>
+
 
 <table class="listTable">
 	<tr>
@@ -75,12 +81,39 @@ else {
 		</tr>
 <%
 	for(Assignment assignment: relevant) {
+		if(assignment.getStartDate()!=null) {
 %>
 		<tr>
 			<td><%= assignment.getMs3employeedb_uid() %></td>
 			<td><%= assignment.getStartDate() %></td>
 		</tr>
 <%
+		}
+	}
+%>
+	</table>
+	
+	<div>This course has been requested by </div>
+	<table class="listTable">
+		<tr>
+			<td>Name</td>
+			<td>Approve</td>
+		</tr>
+<%
+	for(Assignment assignment: relevant) {
+		if(assignment.getStartDate()==null) {
+%>
+		<tr>
+			<td><%= assignment.getMs3employeedb_uid() %></td>
+			<td>
+		    	<aui:form name="approveRequestFromAssign" action="<%=approveRequestFromAssign%>">
+					<aui:input name="requestId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
+					<input id="doApprove" type="submit" value="Approve"/>
+				</aui:form>
+			</td>
+		</tr>
+<%
+		}
 	}
 %>
 	</table>
@@ -99,6 +132,7 @@ else {
 	<tr>
 		<td>Name</td>
 		<td>Screen Name</td>
+		<td>Their Assignments</td>
 	</tr>
 <%
 for(User user: users) {
@@ -113,6 +147,12 @@ for(User user: users) {
 	<tr>
 		<td><%= user.getFullName() %></td>
 		<td><%= user.getScreenName() %></td>
+		<td>
+			<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+				<aui:input name="userAssignmentsScreenName" label="" value="<%= user.getScreenName() %>" style="display:none;" />
+				<input id="doView" type="submit" value="View"/>
+			</aui:form>
+		</td>
 	</tr>	
 <%
 	}

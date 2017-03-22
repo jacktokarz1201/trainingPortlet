@@ -117,7 +117,10 @@ public class CourseController extends MVCPortlet {
 		if(personalAssignmentsString!=null) {
 			return "personalAssignments";
 		}
-		
+		String viewUserAssignmentsString = (String)request.getAttribute("goToUserAssignments");
+		if(viewUserAssignmentsString != null) {
+			return "viewUserAssignments";
+		}
 		return "view";
 	}
 
@@ -140,6 +143,14 @@ public class CourseController extends MVCPortlet {
 	@ActionMapping(params = "action=editCoursePage")
 	public void editCoursePage(ActionRequest request, ActionResponse response) throws Exception{
 		request.setAttribute("goToEditCourse", "true");
+	}
+	
+	@ActionMapping(params = "action=viewUserAssignments")
+	public void viewUserAssignments(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		prefs.setValue("userScreenName", request.getParameter("userAssignmentsScreenName"));
+		prefs.store();
+		request.setAttribute("goToUserAssignments", "true");
 	}
 	
 	@ActionMapping(params = "action=assignToUser")
@@ -304,6 +315,16 @@ public class CourseController extends MVCPortlet {
 		request.setAttribute("success", "You have approved "+assignment.getCourses_title()+" for "+assignment.getMs3employeedb_uid());
 	}
 	
+	@ActionMapping(params = "action=approveRequestFromAssign")
+	public void approveRequestFromAssign(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+		long requestId = Long.parseLong(request.getParameter("requestId"));
+		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
+		assignment.setStartDate(setDate());
+		assignment.setNotes("Approved on "+setDate());
+		AssignmentLocalServiceUtil.updateAssignment(assignment);
+		request.setAttribute("success", "You have approved "+assignment.getCourses_title()+" for "+assignment.getMs3employeedb_uid());
+		request.setAttribute("goToAssignCourse", "true");
+	}
 	
 	
 	public long makeAssignmentId() throws Exception {

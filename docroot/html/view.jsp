@@ -20,23 +20,15 @@
    <portlet:param name="action" value="approveRequest" />
 </portlet:actionURL>
 <%
-	ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 	User user = themeDisplay.getUser();
-if(user != null) {
+if(user.getFullName().equals("")) {
 %>
 	<p>Please sign in to access this portlet.</p>
 <%
 	}
 else {
-	PortletPreferences prefs = renderRequest.getPreferences();
 	String addCourseError = (String)request.getAttribute("addCourseError");
 	String isTrainingSupervisor = (String)prefs.getValue("isTrainingSupervisor", "");
-	String success = (String)request.getAttribute("success");
-	if(success!=null) {
-%>
-		<p><%= success %></p>
-<%
-	}
 %>
 
 <!-- display the courses in a table, hopefully -->
@@ -127,7 +119,7 @@ else {
 <%
 	}
 %>
-		<p>Courses Requests</p>
+		<p>Course Requests</p>
 		<table class="listTable">
 			<tr>
 				<th>Employee</th>
@@ -157,7 +149,7 @@ else {
 
 
 
-<aui:a href="<%= personalAssignmentsPage %>">Check out which courses are assigned to you.</aui:a>
+<aui:a href="<%= personalAssignmentsPage %>">Check out your courses.</aui:a>
 
 <%
 //ending the original if/else checking if they're signed in.

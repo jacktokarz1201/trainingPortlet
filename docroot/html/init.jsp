@@ -22,4 +22,16 @@
 	<portlet:param name="mvcPath" value="/html/interaction/view.jsp"/>
 </portlet:renderURL>
 
-<a class="headerHomeLink" href="<%=home%>">Go To Home</a>
+<%
+PortletPreferences prefs = renderRequest.getPreferences();
+ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+
+	String success = (String)request.getAttribute("success");
+	if(success!=null) {
+%>
+		<p><%= success %></p>
+<%
+	}
+%>
+
+	<a class="headerHomeLink" href="<%=home%>">Go To Home</a>

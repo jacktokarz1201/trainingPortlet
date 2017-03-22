@@ -1,11 +1,11 @@
 <%@include file="/html/init.jsp" %>
 
 <%
-	String screenName = themeDisplay.getUser().getScreenName();
+	String theirScreenName = prefs.getValue("userScreenName", "");
 	List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
 	List<Assignment> relevant = new ArrayList<Assignment>();
 	for(Assignment assignment: assignments) {
-		if(screenName.equals(assignment.getMs3employeedb_uid())) {
+		if(theirScreenName.equals(assignment.getMs3employeedb_uid())) {
 			relevant.add(assignment);
 		}
 	}
