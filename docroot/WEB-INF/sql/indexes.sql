@@ -1,3 +1,4 @@
+create index IX_8F366193 on course_Assignment (assignmentId);
 create index IX_4193D98A on course_Assignment (courses_title);
 create index IX_8C578E83 on course_Assignment (ms3employeedb_uid);
 

@@ -33,6 +33,7 @@ public class AssignmentSoap implements Serializable {
 
 		soapModel.setCourses_title(model.getCourses_title());
 		soapModel.setMs3employeedb_uid(model.getMs3employeedb_uid());
+		soapModel.setAssignedDate(model.getAssignedDate());
 		soapModel.setStartDate(model.getStartDate());
 		soapModel.setEndDate(model.getEndDate());
 		soapModel.setNotes(model.getNotes());
@@ -107,6 +108,14 @@ public class AssignmentSoap implements Serializable {
 		_ms3employeedb_uid = ms3employeedb_uid;
 	}
 
+	public Date getAssignedDate() {
+		return _assignedDate;
+	}
+
+	public void setAssignedDate(Date assignedDate) {
+		_assignedDate = assignedDate;
+	}
+
 	public Date getStartDate() {
 		return _startDate;
 	}
@@ -161,6 +170,7 @@ public class AssignmentSoap implements Serializable {
 
 	private String _courses_title;
 	private String _ms3employeedb_uid;
+	private Date _assignedDate;
 	private Date _startDate;
 	private Date _endDate;
 	private String _notes;

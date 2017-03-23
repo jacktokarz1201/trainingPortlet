@@ -11,6 +11,7 @@
 		</id>
 		<property name="courses_title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="ms3employeedb_uid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="assignedDate" type="org.hibernate.type.TimestampType" />
 		<property name="startDate" type="org.hibernate.type.TimestampType" />
 		<property name="endDate" type="org.hibernate.type.TimestampType" />
 		<property name="notes" type="com.liferay.portal.dao.orm.hibernate.StringType" />

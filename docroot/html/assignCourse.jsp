@@ -3,13 +3,12 @@
 
 <%
 
-	String assignError = (String)prefs.getValue("assignError","");
+	String assignError = (String)request.getAttribute("assignError");
 	String sentTitle = (String)prefs.getValue("assignTitle","");
 	Course course = CourseLocalServiceUtil.getCourse(sentTitle);
 	
-	List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
 	List<Assignment> relevant = new ArrayList<Assignment>();
-	List<User> users = UserLocalServiceUtil.getUsers(0, UserLocalServiceUtil.getUsersCount());
+	
 %>
 
 <portlet:actionURL var="assignToUser">
@@ -21,25 +20,17 @@
 <portlet:actionURL var="approveRequestFromAssign">
 	<portlet:param name="action" value="approveRequestFromAssign" />
 </portlet:actionURL>
-
+<portlet:actionURL var="deleteCourse">
+	<portlet:param name="action" value="deleteCourse" />
+</portlet:actionURL>
 
 <table class="listTable">
-	<tr>
-		<td>
-			<p><aui:input name="title" type="text" style="display:none;"/></p>
-		</td>
-		<td>
-			<p><aui:input name="description" type="text" style="display:none;"/></p>
-		</td>
-		<td>
-			<p><aui:input name="provider" type="text" style="display:none;"/></p>
-		</td>
-		<td>
-			<p><aui:input name="courseId" type="text" style="display:none;"/></p>
-		</td>
-		<td>
-			<p><aui:input name="listPrice" type="text" style="display:none;"/></p>
-		</td>
+	<tr class="listTableHeader">
+		<td>Title</td>
+		<td>Description</td>
+		<td>Provider</td>
+		<td>Course ID</td>
+		<td>List Price</td>
 	</tr>
 	<tr>
 		<td>
@@ -60,6 +51,9 @@
 	</tr>
 </table>
 
+
+	<p><aui:a href= "<%= deleteCourse %>">Delete this Course!</aui:a></p>
+
 <%
 for(Assignment assignment: assignments) {
 	if(course.getTitle().equals(assignment.getCourses_title())) {
@@ -72,36 +66,98 @@ if(relevant.isEmpty()) {
 <%
 }
 else {
+
+//separate assignments into appropriate lists
+	List<Assignment> inProgress = new ArrayList<Assignment>();
+	List<Assignment> requested = new ArrayList<Assignment>();
+	List<Assignment> assigned = new ArrayList<Assignment>();
+	List<Assignment> completed = new ArrayList<Assignment>();
+	for(Assignment assignment: relevant) {
+		if(assignment.getStartDate()!=null && assignment.getEndDate() == null) {
+			inProgress.add(assignment);
+		}
+		else if(assignment.getAssignedDate()!=null && assignment.getStartDate() == null) {
+			assigned.add(assignment);	
+		}
+		else if(assignment.getAssignedDate()==null && assignment.getNotes().equals("requested")) {
+			requested.add(assignment);
+		}
+		else if(assignment.getEndDate()!= null) {
+			completed.add(assignment);
+		}
+	}
+
+	if(inProgress.isEmpty()) {
 %>
-	<div>This course has been assigned to </div>
-	<table class="listTable">
-		<tr>
+	<p class="tableReplacement">Nobody is currently working on this course</p>
+<%
+	}
+	else {
+%>
+		<div class="tableTitle">Currently Working on this Course</div>
+		<table class="listTable">
+			<tr>
+			    <th>Screen Name</th>
+			    <th>Date Started</th>
+			    <th>Progress</th>
+			    <th>Notes</th>
+			</tr>
+<%
+		for(Assignment assignment: inProgress) {
+%>
+			<tr>
+			    <td><%= assignment.getMs3employeedb_uid() %></td>
+			    <td><%= assignment.getStartDate() %></td>
+			    <td> ? </td>
+			    <td><%= assignment.getNotes() %></td>
+			</tr>
+<%
+			}
+%>
+		</table>
+<%
+		}
+	if(assigned.isEmpty()) {
+%>
+	<p class="tableReplacement">This course is not currently assigned to anybody</p>
+<%
+	}
+	else {
+%>
+		<div class="tableTitle">This course has been assigned to </div>
+		<table class="listTable">
+		<tr class="listTableHeader">
 			<td>Name</td>
-			<td>Start Date</td>
+			<td>Date Assigned</td>
 		</tr>
 <%
-	for(Assignment assignment: relevant) {
-		if(assignment.getStartDate()!=null) {
+	for(Assignment assignment: assigned) {
 %>
 		<tr>
 			<td><%= assignment.getMs3employeedb_uid() %></td>
-			<td><%= assignment.getStartDate() %></td>
+			<td><%= assignment.getAssignedDate() %></td>
 		</tr>
 <%
 		}
-	}
 %>
 	</table>
-	
-	<div>This course has been requested by </div>
+<% 
+	}
+	if(requested.isEmpty()) {
+%>
+	<p class="tableReplacement">There are no outstanding requests to take this course</p>
+<%
+	}
+	else {
+%>
+	<div class="tableTitle">This course has been requested by </div>
 	<table class="listTable">
-		<tr>
+		<tr class="listTableHeader">
 			<td>Name</td>
 			<td>Approve</td>
 		</tr>
 <%
-	for(Assignment assignment: relevant) {
-		if(assignment.getStartDate()==null) {
+		for(Assignment assignment: requested) {
 %>
 		<tr>
 			<td><%= assignment.getMs3employeedb_uid() %></td>
@@ -114,25 +170,60 @@ else {
 		</tr>
 <%
 		}
-	}
 %>
 	</table>
-<%
-}
+<% 
+	}
+	if(completed.isEmpty()) {
 %>
+	<p class="tableReplacement">Nobody has completed this course yet</p>
+<%
+	}
+	else {
+%>
+		<div class="tableTitle">This course has been completed by </div>
+	<table class="listTable">
+		<tr class="listTableHeader">
+			<td>Name</td>
+			<td>Start Date</td>
+			<td>End Date</td>
+			<td>Certified</td>
+		</tr>
+<%
+		for(Assignment assignment: completed) {
+%>
+		<tr>
+			<td><%= assignment.getMs3employeedb_uid() %></td>
+			<td><%= assignment.getStartDate() %></td>
+			<td><%= assignment.getEndDate() %></td>
+			<td><%= assignment.getCertification() %></td>
+		</tr>
+<%
+		}
+%>
+	</table>
+<% 
+	}
 
-<p><%= assignError %></p>
-<aui:form name="assignToUser" action="<%=assignToUser%>">
+//end of the else, seeing if there are any assignments linked to this course
+}
+
+	if(assignError!=null) {
+%>
+<p class="error"><%= assignError %></p>
+<%
+	}
+%>
+<aui:form class="inputForm" name="assignToUser" action="<%=assignToUser%>">
 	<aui:input name="user" label="Screen Name" type="text"/>
 	<input value="Assign By Screen Name	" type="submit" />
 </aui:form>
 
 <p>Available Users</p>
 <table class="listTable">
-	<tr>
+	<tr class="listTableHeader">
 		<td>Name</td>
 		<td>Screen Name</td>
-		<td>Their Assignments</td>
 	</tr>
 <%
 for(User user: users) {
@@ -146,11 +237,10 @@ for(User user: users) {
 %>
 	<tr>
 		<td><%= user.getFullName() %></td>
-		<td><%= user.getScreenName() %></td>
 		<td>
 			<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
 				<aui:input name="userAssignmentsScreenName" label="" value="<%= user.getScreenName() %>" style="display:none;" />
-				<input id="doView" type="submit" value="View"/>
+				<input class="linkImitation" id="doView" type="submit" value="<%= user.getScreenName() %>" />
 			</aui:form>
 		</td>
 	</tr>	

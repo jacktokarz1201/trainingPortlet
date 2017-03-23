@@ -4,6 +4,7 @@
 	<model name="com.ms3.training.services.model.Assignment">
 		<field name="courses_title" type="String" />
 		<field name="ms3employeedb_uid" type="String" />
+		<field name="assignedDate" type="Date" />
 		<field name="startDate" type="Date" />
 		<field name="endDate" type="Date" />
 		<field name="notes" type="String" />

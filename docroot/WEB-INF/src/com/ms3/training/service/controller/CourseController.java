@@ -89,21 +89,18 @@ public class CourseController extends MVCPortlet {
 		}
 		
 //  }
-		String fromString = (String)request.getAttribute("fromAction");
-		if(fromString!=null) {
-			System.out.println("From Action was passed! --> "+fromString);
-		}
-		
+	
+	//show the list of courses
 		try {
 			List<Course> courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
 			request.setAttribute("courses", courses);
-			System.out.println("showing!");
 			
 		} catch (SystemException e) {
 			// TODO Auto-generated catch block
 			SessionErrors.add(request, "errorGetCourses");
 			e.printStackTrace();
 		}
+		
 	//Where are we going?
 		String viewString = (String)request.getAttribute("goToEditCourse");
 		if(viewString!=null) {
@@ -121,18 +118,28 @@ public class CourseController extends MVCPortlet {
 		if(viewUserAssignmentsString != null) {
 			return "viewUserAssignments";
 		}
+		String updateAssignmentString = (String)request.getAttribute("goToUpdateAssignment");
+		if(updateAssignmentString != null) {
+			return "updateAssignment";
+		}
+		String startAssignmentString = (String)request.getAttribute("goToStartAssignment");
+		if(startAssignmentString != null) {
+			return "startAssignment";
+		}
+		
+		
 		return "view";
 	}
 
+	
+	
 	
 	@ActionMapping(params = "action=assignCoursePage")
 	public void assignCoursePage(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
 		prefs.setValue("assignTitle", request.getParameter("submitTitle"));
-		prefs.setValue("assignError", "");
 		prefs.store();
 		request.setAttribute("goToAssignCourse", "true");
-		
 	}
 	
 	@ActionMapping(params = "action=personalAssignmentsPage")
@@ -142,6 +149,9 @@ public class CourseController extends MVCPortlet {
 	
 	@ActionMapping(params = "action=editCoursePage")
 	public void editCoursePage(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		prefs.setValue("editTitle", request.getParameter("editTitle"));
+		prefs.store();
 		request.setAttribute("goToEditCourse", "true");
 	}
 	
@@ -153,62 +163,29 @@ public class CourseController extends MVCPortlet {
 		request.setAttribute("goToUserAssignments", "true");
 	}
 	
-	@ActionMapping(params = "action=assignToUser")
-	public void assignToUser(ActionRequest request, ActionResponse response) throws Exception{
+	@ActionMapping(params = "action=updateAssignmentPage")
+	public void updateAssignmentPage(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
-		String screenName = request.getParameter("user");
-		if(screenName == null || screenName.equals("")) {
-			prefs.setValue("assignError", "Please fill in a screen name for the assignment.");
-			prefs.store();
-			request.setAttribute("goToAssignCourse", "true");
-			return;
-		}
-		Long companyId = CompanyThreadLocal.getCompanyId();
-		try {
-	//to ensure user exists with catch
-			User user = UserLocalServiceUtil.getUserByScreenName(companyId, screenName);
-			String title = prefs.getValue("assignTitle", "");
-	//to ensure course exists with catch
-			Course course = CourseLocalServiceUtil.getCourse(title);		
-		//make the assignment, with Id one higher than the existing highest
-			long assignmentId = makeAssignmentId();
-			Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
-			assignment.setStartDate(setDate());
-			assignment.setCourses_title(title);
-			assignment.setMs3employeedb_uid(screenName);
-			AssignmentLocalServiceUtil.addAssignment(assignment);
-			request.setAttribute("success", "Your assignment of "+assignment.getCourses_title()+" to "+assignment.getMs3employeedb_uid()+" has been saved.");
-		}
-		catch (NoSuchUserException e) {
-			prefs.setValue("assignError", "There are no users by that screen name.");
-			prefs.store();
-			request.setAttribute("goToAssignCourse", "true");
-			return;
-		}
-		catch (NoSuchCourseException e) {
-			prefs.setValue("assignError", "A course by that title is not in the catalog.");
-			prefs.store();
-			request.setAttribute("goToAssignCourse", "true");
-			return;
-		}
+		String updateAssignmentId = request.getParameter("requestId");
+		prefs.setValue("updateAssignmentId", updateAssignmentId);
+		prefs.store();
+		request.setAttribute("goToUpdateAssignment", "true");
 	}
 	
-	@ActionMapping(params = "action=requestCourse")
-	public void requestCourse(ActionRequest request, ActionResponse response) throws Exception{
+	@ActionMapping(params = "action=startAssignmentPage")
+	public void startAssignmentPage(ActionRequest request, ActionResponse response) throws Exception{
 		PortletPreferences prefs = request.getPreferences();
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		User user = themeDisplay.getUser();
-		
-		long assignmentId = makeAssignmentId();
-		Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
-		assignment.setCourses_title(request.getParameter("requestTitle"));
-		assignment.setMs3employeedb_uid(user.getScreenName());
-		assignment.setStartDate(null);
-		assignment.setNotes("requested");
-		AssignmentLocalServiceUtil.addAssignment(assignment);
-		request.setAttribute("success", "Your course request has been saved.");
-	System.out.println("Your request has been saved. Or at a minimum, this function worked.");
+		String startAssignmentId = request.getParameter("startAssignmentId");
+		prefs.setValue("startAssignmentId", startAssignmentId);
+		prefs.store();
+		request.setAttribute("goToStartAssignment", "true");
 	}
+	
+	
+	
+	
+	
+	
 	
 	@ActionMapping(params = "action=addCourse")
 	public void addCourse(ActionRequest request, ActionResponse response){
@@ -234,8 +211,7 @@ public class CourseController extends MVCPortlet {
 				
 	//CHECK the entered title doesn't already exist.
 				if(title.equals(course.getTitle())) {
-					prefs.setValue("addCourseError", "That title has already been used.");
-					prefs.store();
+					request.setAttribute("addCourseError", "That title has already been used.");
 					return;
 				}
 	//CHECK the new course id isn't used and is higher than the rest.
@@ -254,9 +230,6 @@ public class CourseController extends MVCPortlet {
 			course.setListPrice(listPrice);
 			CourseLocalServiceUtil.updateCourse(course);
 			SessionMessages.add(request, "successAddCourse");
-	//clear the error message
-			prefs.setValue("addCourseError", "");
-			prefs.store();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -265,18 +238,16 @@ public class CourseController extends MVCPortlet {
 		}
 	}
 	
-	
 	@ActionMapping(params = "action=editCourse")
 	public void editCourse(ActionRequest request, ActionResponse response) 
 			throws PortletException, PortalException, SystemException, IOException{
 		
 		PortletPreferences prefs = request.getPreferences();
 		
-		String title = request.getParameter("title");
+		String title = prefs.getValue("editTitle", "");
 	//CHECK if they put in a title
 		if(title==null) {
-			prefs.setValue("editCourseError", "Put in a title.");
-			prefs.store();
+			request.setAttribute("editCourseError", "Put in a title.");
 			request.setAttribute("goToEditCourse", "true");
 			return;
 		}
@@ -298,33 +269,168 @@ public class CourseController extends MVCPortlet {
 			request.setAttribute("success", "The course "+course.getTitle()+" has been updated.");
 		}
 		catch (NoSuchCourseException e) {
-			prefs.setValue("editCourseError", "A course by that title is not in the catalog.");
-			prefs.store();
+			request.setAttribute("editCourseError", "A course by that title is not in the catalog.");
 			request.setAttribute("goToEditCourse", "true");
 			return;
 		}
 	}
 	
+	@ActionMapping(params = "action=deleteCourse")
+	public void deleteCourse(ActionRequest request, ActionResponse response) {
+		PortletPreferences prefs = request.getPreferences();
+		String title = prefs.getValue("assignTitle", "");
+		Course course;
+		try {
+			course = CourseLocalServiceUtil.getCourse(title);
+			CourseLocalServiceUtil.deleteCourse(course);
+			request.setAttribute("success", title+" was successfully deleted.");
+		} catch (NoSuchCourseException e) {
+			request.setAttribute("assignError", "A course by that title is not in the catalog.");
+			request.setAttribute("goToAssignCourse", "true");
+			return;
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@ActionMapping(params = "action=assignToUser")
+	public void assignToUser(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		String screenName = request.getParameter("user");
+		if(screenName == null || screenName.equals("")) {
+			request.setAttribute("assignError", "Please fill in a screen name for the assignment.");
+			request.setAttribute("goToAssignCourse", "true");
+			return;
+		}
+		Long companyId = CompanyThreadLocal.getCompanyId();
+		try {
+	//to ensure user exists with catch
+			User user = UserLocalServiceUtil.getUserByScreenName(companyId, screenName);
+			String title = prefs.getValue("assignTitle", "");
+	//to ensure course exists with catch
+			Course course = CourseLocalServiceUtil.getCourse(title);
+	//to ensure they aren't already assigned
+			if(checkIfInAssignments(screenName, title)) {
+				request.setAttribute("assignError", "The user "+screenName+" cannot be assigned "+title+".");
+				request.setAttribute("goToAssignCourse", "true");
+				return;
+			}
+		//make the assignment, with Id one higher than the existing highest
+			long assignmentId = makeAssignmentId();
+			Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
+			assignment.setAssignedDate(setDate());
+			assignment.setCourses_title(title);
+			assignment.setMs3employeedb_uid(screenName);
+			AssignmentLocalServiceUtil.addAssignment(assignment);
+			request.setAttribute("success", "Your assignment of "+assignment.getCourses_title()+" to "+assignment.getMs3employeedb_uid()+" has been saved.");
+		}
+		catch (NoSuchUserException e) {
+			request.setAttribute("assignError", "There are no users by that screen name.");
+			request.setAttribute("goToAssignCourse", "true");
+			return;
+		}
+		catch (NoSuchCourseException e) {
+			request.setAttribute("assignError", "A course by that title is not in the catalog.");
+			request.setAttribute("goToAssignCourse", "true");
+			return;
+		}
+	}
+	
+	@ActionMapping(params = "action=requestCourse")
+	public void requestCourse(ActionRequest request, ActionResponse response) throws Exception{
+		PortletPreferences prefs = request.getPreferences();
+		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		User user = themeDisplay.getUser();
+		String title = request.getParameter("requestTitle");
+		if(checkIfInAssignments(user.getScreenName(), title)) {
+			request.setAttribute("requestError", "The user "+user.getScreenName()+" cannot request "+title+".");
+			return;
+		}
+		long assignmentId = makeAssignmentId();
+		Assignment assignment = AssignmentLocalServiceUtil.createAssignment(assignmentId);
+		assignment.setCourses_title(title);
+		assignment.setMs3employeedb_uid(user.getScreenName());
+	//not necessary, but to be safe.
+		assignment.setAssignedDate(null);
+		assignment.setStartDate(null);
+	//for sorting
+		assignment.setNotes("requested");
+		AssignmentLocalServiceUtil.addAssignment(assignment);
+		request.setAttribute("success", "Your course request has been saved.");
+	System.out.println("Your request has been saved. Or at a minimum, this function worked.");
+	}
+	
 	@ActionMapping(params = "action=approveRequest")
-	public void approveRequest(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+	public void approveRequest(ActionRequest request, ActionResponse response) throws PortalException, SystemException, ReadOnlyException, ValidatorException, IOException {
+		PortletPreferences prefs = request.getPreferences();
+		prefs.setValue("requestId", request.getParameter("requestId"));
+		prefs.store();
 		long requestId = Long.parseLong(request.getParameter("requestId"));
 		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
-		assignment.setStartDate(setDate());
+		assignment.setAssignedDate(setDate());
 		assignment.setNotes("Approved on "+setDate());
 		AssignmentLocalServiceUtil.updateAssignment(assignment);
 		request.setAttribute("success", "You have approved "+assignment.getCourses_title()+" for "+assignment.getMs3employeedb_uid());
 	}
 	
 	@ActionMapping(params = "action=approveRequestFromAssign")
-	public void approveRequestFromAssign(ActionRequest request, ActionResponse response) throws PortalException, SystemException {
+	public void approveRequestFromAssign(ActionRequest request, ActionResponse response) throws PortalException, SystemException, ReadOnlyException, ValidatorException, IOException{
+		PortletPreferences prefs = request.getPreferences();
+		prefs.setValue("requestId", request.getParameter("requestId"));
+		prefs.store();
 		long requestId = Long.parseLong(request.getParameter("requestId"));
 		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
-		assignment.setStartDate(setDate());
+		assignment.setAssignedDate(setDate());
 		assignment.setNotes("Approved on "+setDate());
 		AssignmentLocalServiceUtil.updateAssignment(assignment);
 		request.setAttribute("success", "You have approved "+assignment.getCourses_title()+" for "+assignment.getMs3employeedb_uid());
 		request.setAttribute("goToAssignCourse", "true");
 	}
+	
+	@ActionMapping(params = "action=updateAssignment")
+	public void updateAssignment(ActionRequest request, ActionResponse response) throws Exception {
+		PortletPreferences prefs = request.getPreferences();
+		String reqId = prefs.getValue("updateAssignmentId", "");
+		long requestId = Long.parseLong(reqId);
+		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
+		assignment.setNotes(request.getParameter("notes"));
+		if(request.getParameter("completed").equals("true")) {
+			assignment.setEndDate(setDate());
+		}
+		if(request.getParameter("certified").equals("true")) {
+			assignment.setCertification(true);
+		}
+		System.out.println(request.getParameter("completed")+" and cert: "+request.getParameter("certified"));
+		AssignmentLocalServiceUtil.updateAssignment(assignment);
+		request.setAttribute("goToPersonalAssignments", "true");
+		request.setAttribute("success", assignment.getCourses_title()+" was updated.");
+	}
+	
+	@ActionMapping(params = "action=startAssignment")
+	public void startAssignment(ActionRequest request, ActionResponse response) throws Exception {
+		PortletPreferences prefs = request.getPreferences();
+		String reqId = prefs.getValue("startAssignmentId", "");
+		long requestId = Long.parseLong(reqId);
+		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
+		assignment.setCost(request.getParameter("cost"));
+		assignment.setStartDate(setDate());
+	//to be on the safe side
+		assignment.setEndDate(null);
+		assignment.setNotes(request.getParameter("notes"));
+		System.out.println(assignment.toString());
+		AssignmentLocalServiceUtil.updateAssignment(assignment);
+		request.setAttribute("goToPersonalAssignments", "true");
+		request.setAttribute("success", "You have begun "+assignment.getCourses_title());
+	}
+	
+	
+	
+	
+	
 	
 	
 	public long makeAssignmentId() throws Exception {
@@ -348,6 +454,24 @@ public class CourseController extends MVCPortlet {
 	    System.out.println(df.format(calobj.getTime()));
 	    return dateobj;
 	}
+	
+	public boolean checkIfInAssignments(String screenName, String title) throws SystemException {
+		List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
+		System.out.println("Searching title: "+title);
+		System.out.println("searching name: "+screenName);
+		for(Assignment assignment: assignments) {
+			System.out.println("Assignment title -> "+assignment.getCourses_title());
+			if(assignment.getCourses_title().equals(title)) {
+				System.out.println("titles match...");
+				if(assignment.getMs3employeedb_uid().equals(screenName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	
 	
 	
 	

@@ -26,10 +26,14 @@
 PortletPreferences prefs = renderRequest.getPreferences();
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
+List<Course> courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
+List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
+List<User> users = UserLocalServiceUtil.getUsers(0, UserLocalServiceUtil.getUsersCount());
+
 	String success = (String)request.getAttribute("success");
 	if(success!=null) {
 %>
-		<p><%= success %></p>
+		<p id="success"><%= success %></p>
 <%
 	}
 %>

@@ -1,6 +1,7 @@
 create table course_Assignment (
 	courses_title VARCHAR(75) null,
 	ms3employeedb_uid VARCHAR(75) null,
+	assignedDate DATE null,
 	startDate DATE null,
 	endDate DATE null,
 	notes VARCHAR(75) null,

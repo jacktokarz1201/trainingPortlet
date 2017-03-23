@@ -51,6 +51,7 @@ public class AssignmentWrapper implements Assignment, ModelWrapper<Assignment> {
 
 		attributes.put("courses_title", getCourses_title());
 		attributes.put("ms3employeedb_uid", getMs3employeedb_uid());
+		attributes.put("assignedDate", getAssignedDate());
 		attributes.put("startDate", getStartDate());
 		attributes.put("endDate", getEndDate());
 		attributes.put("notes", getNotes());
@@ -73,6 +74,12 @@ public class AssignmentWrapper implements Assignment, ModelWrapper<Assignment> {
 
 		if (ms3employeedb_uid != null) {
 			setMs3employeedb_uid(ms3employeedb_uid);
+		}
+
+		Date assignedDate = (Date)attributes.get("assignedDate");
+
+		if (assignedDate != null) {
+			setAssignedDate(assignedDate);
 		}
 
 		Date startDate = (Date)attributes.get("startDate");
@@ -170,6 +177,26 @@ public class AssignmentWrapper implements Assignment, ModelWrapper<Assignment> {
 	@Override
 	public void setMs3employeedb_uid(java.lang.String ms3employeedb_uid) {
 		_assignment.setMs3employeedb_uid(ms3employeedb_uid);
+	}
+
+	/**
+	* Returns the assigned date of this assignment.
+	*
+	* @return the assigned date of this assignment
+	*/
+	@Override
+	public java.util.Date getAssignedDate() {
+		return _assignment.getAssignedDate();
+	}
+
+	/**
+	* Sets the assigned date of this assignment.
+	*
+	* @param assignedDate the assigned date of this assignment
+	*/
+	@Override
+	public void setAssignedDate(java.util.Date assignedDate) {
+		_assignment.setAssignedDate(assignedDate);
 	}
 
 	/**

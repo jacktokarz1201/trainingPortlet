@@ -31,52 +31,68 @@ else {
 	String isTrainingSupervisor = (String)prefs.getValue("isTrainingSupervisor", "");
 %>
 
-<!-- display the courses in a table, hopefully -->
+<!-- display the courses in a table, a different table for admins and non-admins -->
 
 <div id="allCoursesDisplay">
 <table class="listTable">
-	<tr>
-		<td><p>Title: </p></td>
-		<td><p>Description: </p></td>
-		<td><p>Provider: </p></td>
-		<td><p>Course ID: </p></td>
-		<td><p>List Price: </p></td>
+	<tr class="listTableHeader">
+		<td>Title: </td>
+		<td>Description: </td>
+		<td>Provider: </td>
+		<td>List Price: </td>
+		<td>Course ID: </td>
 <%
-	if(isTrainingSupervisor.equals("true")) {
+	if(!isTrainingSupervisor.equals("true")) {
 %>
-		<td><p>Assign to Employee</p></td>
-	</tr>
+		<td>Request Course</td>
 <%
 	}
 	else {
 %>
-		<td><p>Request Course</p></td>
-	</tr>
+		<td>Edit Course</td>
 <%
 	}
+%>	
 
-	List<Course> courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
+	</tr>
+
+<%
 	for(Course course: courses) {
-%>
-		
+%>	
 	<tr>
-		<td><div><%=course.getTitle() %></div></td>
-		<td><div><%=course.getDescription() %></div></td>
-		<td><div><%=course.getProvider() %></div></td>
-		<td><div><%=course.getCourseId() %></div></td>
-		<td><div><%=course.getListPrice() %></div></td>
 <%
 		if(isTrainingSupervisor.equals("true")) {
 %>
-			<td>
-					<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
-						<aui:input name="submitTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
-						<input id="doAssign" type="submit" value="Assign"/>
-					</aui:form>
-			</td>
+		<td>
+			<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
+				<aui:input name="submitTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
+				<input class="linkImitation" id="doAssign" type="submit" value="<%= course.getTitle() %>"/>
+			</aui:form>
+		</td>
 <%
 		}
 		else {
+%>
+		<td><div><%=course.getTitle() %></div></td>
+<%
+		}
+%>
+		<td><div><%=course.getDescription() %></div></td>
+		<td><div><%=course.getProvider() %></div></td>
+		<td><div><%=course.getListPrice() %></div></td>
+		<td><div><%=course.getCourseId() %></div></td>
+<%
+		if(!isTrainingSupervisor.equals("true")) {
+			boolean alreadyAssigned = false;
+			for(Assignment assignment: assignments) {
+				if(assignment.getCourses_title().equals(course.getTitle())) {
+					if(assignment.getMs3employeedb_uid().equals(user.getScreenName())) {
+						alreadyAssigned=true;
+						break;
+					}
+				}
+			}
+			if(!alreadyAssigned) {
 %>
 			<td>
 					<aui:form name="requestCourse" action="<%=requestCourse%>">
@@ -84,6 +100,18 @@ else {
 						<input id="doAssign" type="submit" value="Request"/>
 					</aui:form>
 			</td>	
+<%
+			}
+		}
+		else {
+%>
+
+			<td>
+					<aui:form name="editCoursePage" action="<%=editCoursePage%>">
+						<aui:input name="editTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
+						<input id="doEdit" type="submit" value="Edit"/>
+					</aui:form>
+
 <%
 		}
 %>
@@ -96,40 +124,37 @@ else {
 
 <%
 	if(isTrainingSupervisor.equals("true")) {
-		//only the training supervisors can add or edit courses.
+		//only the training supervisors can add or edit courses and approve requests.
 %>
-<aui:a href="<%= editCoursePage %>">Edit a course</aui:a>
+
 <%
 	if(addCourseError!=null) {
 %>
-		<p><%= addCourseError %></p>
+		<p class="error"><%= addCourseError %></p>
 <%
 	}
 %>
 
-<aui:form name="addCourse" action="<%=addCourse%>">
+<aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
 	<aui:input name="title" type="text"/>
-	<aui:input name="description" type="text"/>
+	<aui:input name="description" type="textarea"/>
 	<aui:input name="provider" type="text"/>
 	<aui:input name="listPrice" type="text"/>
 	
 	<input id="submitCourse" type="submit" style="display:none;"/>
 	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
 </aui:form>
-<%
-	}
-%>
+
 		<p>Course Requests</p>
 		<table class="listTable">
-			<tr>
-				<th>Employee</th>
-			    <th>Course Title</th>
-			    <th>Approve Request</th>
+			<tr class="listTableHeader">
+				<td>Employee</td>
+			    <td>Course Title</td>
+			    <td>Approve Request</td>
 			</tr>
 	<%
-	List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
 		for(Assignment assignment: assignments) {
-			if(assignment.getStartDate()==null && assignment.getNotes().equals("requested")) {
+			if(assignment.getAssignedDate()==null && assignment.getNotes().equals("requested")) {
 	%>
 			<tr>
 				<td><%= assignment.getMs3employeedb_uid() %></td>
@@ -144,6 +169,7 @@ else {
 	<%
 			}
 		}
+	}
 	%>
 		</table>
 

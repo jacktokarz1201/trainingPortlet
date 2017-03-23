@@ -20,6 +20,7 @@
     <entity name="Assignment" local-service="true">
         <column name="courses_title" type="String" primary="false"></column>
         <column name="ms3employeedb_uid" type="String" primary="false"></column>
+        <column name="assignedDate" type="Date"></column>
         <column name="startDate" type="Date"></column>
         <column name="endDate" type="Date"></column>
         <column name="notes" type="String"></column>
@@ -32,6 +33,9 @@
         </finder>
         <finder name="Ms3employeedb_uid" return-type="Collection">
         	<finder-column name="ms3employeedb_uid"></finder-column>
+        </finder>
+        <finder name="assignmentId" return-type="Assignment">
+            <finder-column name="assignmentId"></finder-column>
         </finder>
     </entity>
 </service-builder>

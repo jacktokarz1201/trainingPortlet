@@ -450,6 +450,75 @@ public class AssignmentUtil {
 	}
 
 	/**
+	* Returns the assignment where assignmentId = &#63; or throws a {@link com.ms3.training.services.NoSuchAssignmentException} if it could not be found.
+	*
+	* @param assignmentId the assignment ID
+	* @return the matching assignment
+	* @throws com.ms3.training.services.NoSuchAssignmentException if a matching assignment could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.ms3.training.services.model.Assignment findByassignmentId(
+		long assignmentId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.ms3.training.services.NoSuchAssignmentException {
+		return getPersistence().findByassignmentId(assignmentId);
+	}
+
+	/**
+	* Returns the assignment where assignmentId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param assignmentId the assignment ID
+	* @return the matching assignment, or <code>null</code> if a matching assignment could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.ms3.training.services.model.Assignment fetchByassignmentId(
+		long assignmentId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByassignmentId(assignmentId);
+	}
+
+	/**
+	* Returns the assignment where assignmentId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param assignmentId the assignment ID
+	* @param retrieveFromCache whether to use the finder cache
+	* @return the matching assignment, or <code>null</code> if a matching assignment could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.ms3.training.services.model.Assignment fetchByassignmentId(
+		long assignmentId, boolean retrieveFromCache)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByassignmentId(assignmentId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the assignment where assignmentId = &#63; from the database.
+	*
+	* @param assignmentId the assignment ID
+	* @return the assignment that was removed
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.ms3.training.services.model.Assignment removeByassignmentId(
+		long assignmentId)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.ms3.training.services.NoSuchAssignmentException {
+		return getPersistence().removeByassignmentId(assignmentId);
+	}
+
+	/**
+	* Returns the number of assignments where assignmentId = &#63;.
+	*
+	* @param assignmentId the assignment ID
+	* @return the number of matching assignments
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByassignmentId(long assignmentId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByassignmentId(assignmentId);
+	}
+
+	/**
 	* Caches the assignment in the entity cache if it is enabled.
 	*
 	* @param assignment the assignment

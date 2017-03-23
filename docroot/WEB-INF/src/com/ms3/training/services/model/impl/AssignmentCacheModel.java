@@ -38,12 +38,14 @@ public class AssignmentCacheModel implements CacheModel<Assignment>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{courses_title=");
 		sb.append(courses_title);
 		sb.append(", ms3employeedb_uid=");
 		sb.append(ms3employeedb_uid);
+		sb.append(", assignedDate=");
+		sb.append(assignedDate);
 		sb.append(", startDate=");
 		sb.append(startDate);
 		sb.append(", endDate=");
@@ -77,6 +79,13 @@ public class AssignmentCacheModel implements CacheModel<Assignment>,
 		}
 		else {
 			assignmentImpl.setMs3employeedb_uid(ms3employeedb_uid);
+		}
+
+		if (assignedDate == Long.MIN_VALUE) {
+			assignmentImpl.setAssignedDate(null);
+		}
+		else {
+			assignmentImpl.setAssignedDate(new Date(assignedDate));
 		}
 
 		if (startDate == Long.MIN_VALUE) {
@@ -119,6 +128,7 @@ public class AssignmentCacheModel implements CacheModel<Assignment>,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		courses_title = objectInput.readUTF();
 		ms3employeedb_uid = objectInput.readUTF();
+		assignedDate = objectInput.readLong();
 		startDate = objectInput.readLong();
 		endDate = objectInput.readLong();
 		notes = objectInput.readUTF();
@@ -144,6 +154,7 @@ public class AssignmentCacheModel implements CacheModel<Assignment>,
 			objectOutput.writeUTF(ms3employeedb_uid);
 		}
 
+		objectOutput.writeLong(assignedDate);
 		objectOutput.writeLong(startDate);
 		objectOutput.writeLong(endDate);
 
@@ -167,6 +178,7 @@ public class AssignmentCacheModel implements CacheModel<Assignment>,
 
 	public String courses_title;
 	public String ms3employeedb_uid;
+	public long assignedDate;
 	public long startDate;
 	public long endDate;
 	public String notes;

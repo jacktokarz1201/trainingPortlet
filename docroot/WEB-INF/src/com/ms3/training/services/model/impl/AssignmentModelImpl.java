@@ -66,6 +66,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "courses_title", Types.VARCHAR },
 			{ "ms3employeedb_uid", Types.VARCHAR },
+			{ "assignedDate", Types.TIMESTAMP },
 			{ "startDate", Types.TIMESTAMP },
 			{ "endDate", Types.TIMESTAMP },
 			{ "notes", Types.VARCHAR },
@@ -73,7 +74,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 			{ "certification", Types.BOOLEAN },
 			{ "assignmentId", Types.BIGINT }
 		};
-	public static final String TABLE_SQL_CREATE = "create table course_Assignment (courses_title VARCHAR(75) null,ms3employeedb_uid VARCHAR(75) null,startDate DATE null,endDate DATE null,notes VARCHAR(75) null,cost VARCHAR(75) null,certification BOOLEAN,assignmentId LONG not null primary key)";
+	public static final String TABLE_SQL_CREATE = "create table course_Assignment (courses_title VARCHAR(75) null,ms3employeedb_uid VARCHAR(75) null,assignedDate DATE null,startDate DATE null,endDate DATE null,notes VARCHAR(75) null,cost VARCHAR(75) null,certification BOOLEAN,assignmentId LONG not null primary key)";
 	public static final String TABLE_SQL_DROP = "drop table course_Assignment";
 	public static final String ORDER_BY_JPQL = " ORDER BY assignment.assignmentId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY course_Assignment.assignmentId ASC";
@@ -89,9 +90,9 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.ms3.training.services.model.Assignment"),
 			true);
-	public static long COURSES_TITLE_COLUMN_BITMASK = 1L;
-	public static long MS3EMPLOYEEDB_UID_COLUMN_BITMASK = 2L;
-	public static long ASSIGNMENTID_COLUMN_BITMASK = 4L;
+	public static long ASSIGNMENTID_COLUMN_BITMASK = 1L;
+	public static long COURSES_TITLE_COLUMN_BITMASK = 2L;
+	public static long MS3EMPLOYEEDB_UID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -108,6 +109,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		model.setCourses_title(soapModel.getCourses_title());
 		model.setMs3employeedb_uid(soapModel.getMs3employeedb_uid());
+		model.setAssignedDate(soapModel.getAssignedDate());
 		model.setStartDate(soapModel.getStartDate());
 		model.setEndDate(soapModel.getEndDate());
 		model.setNotes(soapModel.getNotes());
@@ -180,6 +182,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		attributes.put("courses_title", getCourses_title());
 		attributes.put("ms3employeedb_uid", getMs3employeedb_uid());
+		attributes.put("assignedDate", getAssignedDate());
 		attributes.put("startDate", getStartDate());
 		attributes.put("endDate", getEndDate());
 		attributes.put("notes", getNotes());
@@ -202,6 +205,12 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		if (ms3employeedb_uid != null) {
 			setMs3employeedb_uid(ms3employeedb_uid);
+		}
+
+		Date assignedDate = (Date)attributes.get("assignedDate");
+
+		if (assignedDate != null) {
+			setAssignedDate(assignedDate);
 		}
 
 		Date startDate = (Date)attributes.get("startDate");
@@ -295,6 +304,17 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 	@JSON
 	@Override
+	public Date getAssignedDate() {
+		return _assignedDate;
+	}
+
+	@Override
+	public void setAssignedDate(Date assignedDate) {
+		_assignedDate = assignedDate;
+	}
+
+	@JSON
+	@Override
 	public Date getStartDate() {
 		return _startDate;
 	}
@@ -371,7 +391,19 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 	@Override
 	public void setAssignmentId(long assignmentId) {
+		_columnBitmask |= ASSIGNMENTID_COLUMN_BITMASK;
+
+		if (!_setOriginalAssignmentId) {
+			_setOriginalAssignmentId = true;
+
+			_originalAssignmentId = _assignmentId;
+		}
+
 		_assignmentId = assignmentId;
+	}
+
+	public long getOriginalAssignmentId() {
+		return _originalAssignmentId;
 	}
 
 	public long getColumnBitmask() {
@@ -407,6 +439,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		assignmentImpl.setCourses_title(getCourses_title());
 		assignmentImpl.setMs3employeedb_uid(getMs3employeedb_uid());
+		assignmentImpl.setAssignedDate(getAssignedDate());
 		assignmentImpl.setStartDate(getStartDate());
 		assignmentImpl.setEndDate(getEndDate());
 		assignmentImpl.setNotes(getNotes());
@@ -469,6 +502,10 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		assignmentModelImpl._originalMs3employeedb_uid = assignmentModelImpl._ms3employeedb_uid;
 
+		assignmentModelImpl._originalAssignmentId = assignmentModelImpl._assignmentId;
+
+		assignmentModelImpl._setOriginalAssignmentId = false;
+
 		assignmentModelImpl._columnBitmask = 0;
 	}
 
@@ -490,6 +527,15 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 		if ((ms3employeedb_uid != null) && (ms3employeedb_uid.length() == 0)) {
 			assignmentCacheModel.ms3employeedb_uid = null;
+		}
+
+		Date assignedDate = getAssignedDate();
+
+		if (assignedDate != null) {
+			assignmentCacheModel.assignedDate = assignedDate.getTime();
+		}
+		else {
+			assignmentCacheModel.assignedDate = Long.MIN_VALUE;
 		}
 
 		Date startDate = getStartDate();
@@ -535,12 +581,14 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{courses_title=");
 		sb.append(getCourses_title());
 		sb.append(", ms3employeedb_uid=");
 		sb.append(getMs3employeedb_uid());
+		sb.append(", assignedDate=");
+		sb.append(getAssignedDate());
 		sb.append(", startDate=");
 		sb.append(getStartDate());
 		sb.append(", endDate=");
@@ -560,7 +608,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("com.ms3.training.services.model.Assignment");
@@ -573,6 +621,10 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 		sb.append(
 			"<column><column-name>ms3employeedb_uid</column-name><column-value><![CDATA[");
 		sb.append(getMs3employeedb_uid());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>assignedDate</column-name><column-value><![CDATA[");
+		sb.append(getAssignedDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>startDate</column-name><column-value><![CDATA[");
@@ -612,12 +664,15 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 	private String _originalCourses_title;
 	private String _ms3employeedb_uid;
 	private String _originalMs3employeedb_uid;
+	private Date _assignedDate;
 	private Date _startDate;
 	private Date _endDate;
 	private String _notes;
 	private String _cost;
 	private boolean _certification;
 	private long _assignmentId;
+	private long _originalAssignmentId;
+	private boolean _setOriginalAssignmentId;
 	private long _columnBitmask;
 	private Assignment _escapedModel;
 }

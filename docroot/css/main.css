@@ -1,22 +1,57 @@
+.tableTitle {
+	margin-bottom: 0px;
+	font-weight: bold;
+	margin-left: 20px;
+}
 
-input {
-	margin-bottom: 10px;
+.tableReplacement {
+	margin: 20px 0px 20px 30px;
+	font-size:16px;
 }
 
 .listTable {
-	margin: 40px;
+	margin-top: 20px;
+	margin-bottom: 40px;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.listTableHeader {
+	font-weight: bold;
+	font-size: 16px;
 }
 
 .listTable td {
+	padding: 10px 6px 10px 6px;
 	border: 1px solid black;
 	border-collapse: collapse;
-	width: 120px;
-	height: auto;
 	text-align: center;
 	vertical-align: middle;
 }
 
-.listTable p {
-	text-size: 24px;
-	font-weight: bold;
+.inputForm input{
+	padding: 0px;
+	margin: 0px;
 }
+
+#success {
+	color: green;
+	text-decoration: underline;
+	font-size: 16px;
+}
+
+.error {
+	color: red;
+	font-weight: bold;
+	border: 1px solid red;
+	padding: 10px;
+}
+
+.linkImitation {
+	color: blue;
+	text-decoration: underline;
+	border: 0px;
+	background-color: white;
+}
+
+

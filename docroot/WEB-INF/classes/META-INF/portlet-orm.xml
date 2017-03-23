@@ -12,6 +12,9 @@
 			<id name="assignmentId" />
 			<basic name="courses_title" />
 			<basic name="ms3employeedb_uid" />
+			<basic name="assignedDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
 			<basic name="startDate">
 				<temporal>TIMESTAMP</temporal>
 			</basic>

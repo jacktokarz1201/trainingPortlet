@@ -1174,6 +1174,224 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 		"assignment.ms3employeedb_uid = ?";
 	private static final String _FINDER_COLUMN_MS3EMPLOYEEDB_UID_MS3EMPLOYEEDB_UID_3 =
 		"(assignment.ms3employeedb_uid IS NULL OR assignment.ms3employeedb_uid = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_ASSIGNMENTID = new FinderPath(AssignmentModelImpl.ENTITY_CACHE_ENABLED,
+			AssignmentModelImpl.FINDER_CACHE_ENABLED, AssignmentImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByassignmentId",
+			new String[] { Long.class.getName() },
+			AssignmentModelImpl.ASSIGNMENTID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_ASSIGNMENTID = new FinderPath(AssignmentModelImpl.ENTITY_CACHE_ENABLED,
+			AssignmentModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByassignmentId",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns the assignment where assignmentId = &#63; or throws a {@link com.ms3.training.services.NoSuchAssignmentException} if it could not be found.
+	 *
+	 * @param assignmentId the assignment ID
+	 * @return the matching assignment
+	 * @throws com.ms3.training.services.NoSuchAssignmentException if a matching assignment could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Assignment findByassignmentId(long assignmentId)
+		throws NoSuchAssignmentException, SystemException {
+		Assignment assignment = fetchByassignmentId(assignmentId);
+
+		if (assignment == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("assignmentId=");
+			msg.append(assignmentId);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isWarnEnabled()) {
+				_log.warn(msg.toString());
+			}
+
+			throw new NoSuchAssignmentException(msg.toString());
+		}
+
+		return assignment;
+	}
+
+	/**
+	 * Returns the assignment where assignmentId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param assignmentId the assignment ID
+	 * @return the matching assignment, or <code>null</code> if a matching assignment could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Assignment fetchByassignmentId(long assignmentId)
+		throws SystemException {
+		return fetchByassignmentId(assignmentId, true);
+	}
+
+	/**
+	 * Returns the assignment where assignmentId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param assignmentId the assignment ID
+	 * @param retrieveFromCache whether to use the finder cache
+	 * @return the matching assignment, or <code>null</code> if a matching assignment could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Assignment fetchByassignmentId(long assignmentId,
+		boolean retrieveFromCache) throws SystemException {
+		Object[] finderArgs = new Object[] { assignmentId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+					finderArgs, this);
+		}
+
+		if (result instanceof Assignment) {
+			Assignment assignment = (Assignment)result;
+
+			if ((assignmentId != assignment.getAssignmentId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_ASSIGNMENT_WHERE);
+
+			query.append(_FINDER_COLUMN_ASSIGNMENTID_ASSIGNMENTID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(assignmentId);
+
+				List<Assignment> list = q.list();
+
+				if (list.isEmpty()) {
+					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+						finderArgs, list);
+				}
+				else {
+					if ((list.size() > 1) && _log.isWarnEnabled()) {
+						_log.warn(
+							"AssignmentPersistenceImpl.fetchByassignmentId(long, boolean) with parameters (" +
+							StringUtil.merge(finderArgs) +
+							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					}
+
+					Assignment assignment = list.get(0);
+
+					result = assignment;
+
+					cacheResult(assignment);
+
+					if ((assignment.getAssignmentId() != assignmentId)) {
+						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+							finderArgs, assignment);
+					}
+				}
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Assignment)result;
+		}
+	}
+
+	/**
+	 * Removes the assignment where assignmentId = &#63; from the database.
+	 *
+	 * @param assignmentId the assignment ID
+	 * @return the assignment that was removed
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Assignment removeByassignmentId(long assignmentId)
+		throws NoSuchAssignmentException, SystemException {
+		Assignment assignment = findByassignmentId(assignmentId);
+
+		return remove(assignment);
+	}
+
+	/**
+	 * Returns the number of assignments where assignmentId = &#63;.
+	 *
+	 * @param assignmentId the assignment ID
+	 * @return the number of matching assignments
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByassignmentId(long assignmentId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_ASSIGNMENTID;
+
+		Object[] finderArgs = new Object[] { assignmentId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_ASSIGNMENT_WHERE);
+
+			query.append(_FINDER_COLUMN_ASSIGNMENTID_ASSIGNMENTID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(assignmentId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_ASSIGNMENTID_ASSIGNMENTID_2 = "assignment.assignmentId = ?";
 
 	public AssignmentPersistenceImpl() {
 		setModelClass(Assignment.class);
@@ -1188,6 +1406,9 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 	public void cacheResult(Assignment assignment) {
 		EntityCacheUtil.putResult(AssignmentModelImpl.ENTITY_CACHE_ENABLED,
 			AssignmentImpl.class, assignment.getPrimaryKey(), assignment);
+
+		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+			new Object[] { assignment.getAssignmentId() }, assignment);
 
 		assignment.resetOriginalValues();
 	}
@@ -1245,6 +1466,8 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache(assignment);
 	}
 
 	@Override
@@ -1255,6 +1478,49 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 		for (Assignment assignment : assignments) {
 			EntityCacheUtil.removeResult(AssignmentModelImpl.ENTITY_CACHE_ENABLED,
 				AssignmentImpl.class, assignment.getPrimaryKey());
+
+			clearUniqueFindersCache(assignment);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(Assignment assignment) {
+		if (assignment.isNew()) {
+			Object[] args = new Object[] { assignment.getAssignmentId() };
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_ASSIGNMENTID, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID, args,
+				assignment);
+		}
+		else {
+			AssignmentModelImpl assignmentModelImpl = (AssignmentModelImpl)assignment;
+
+			if ((assignmentModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_ASSIGNMENTID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { assignment.getAssignmentId() };
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_ASSIGNMENTID,
+					args, Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID,
+					args, assignment);
+			}
+		}
+	}
+
+	protected void clearUniqueFindersCache(Assignment assignment) {
+		AssignmentModelImpl assignmentModelImpl = (AssignmentModelImpl)assignment;
+
+		Object[] args = new Object[] { assignment.getAssignmentId() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ASSIGNMENTID, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID, args);
+
+		if ((assignmentModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_ASSIGNMENTID.getColumnBitmask()) != 0) {
+			args = new Object[] { assignmentModelImpl.getOriginalAssignmentId() };
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ASSIGNMENTID, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_ASSIGNMENTID, args);
 		}
 	}
 
@@ -1442,6 +1708,9 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 		EntityCacheUtil.putResult(AssignmentModelImpl.ENTITY_CACHE_ENABLED,
 			AssignmentImpl.class, assignment.getPrimaryKey(), assignment);
 
+		clearUniqueFindersCache(assignment);
+		cacheUniqueFindersCache(assignment);
+
 		return assignment;
 	}
 
@@ -1457,6 +1726,7 @@ public class AssignmentPersistenceImpl extends BasePersistenceImpl<Assignment>
 
 		assignmentImpl.setCourses_title(assignment.getCourses_title());
 		assignmentImpl.setMs3employeedb_uid(assignment.getMs3employeedb_uid());
+		assignmentImpl.setAssignedDate(assignment.getAssignedDate());
 		assignmentImpl.setStartDate(assignment.getStartDate());
 		assignmentImpl.setEndDate(assignment.getEndDate());
 		assignmentImpl.setNotes(assignment.getNotes());

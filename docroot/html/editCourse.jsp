@@ -6,17 +6,21 @@
 </portlet:actionURL>
 
 <%
-	String editCourseError = (String)prefs.getValue("editCourseError","");
+	String editCourseError = (String)request.getAttribute("editCourseError");
+	String title = (String)prefs.getValue("editTitle", "");
+	Course course= CourseLocalServiceUtil.getCourse(title);
 
+	if(editCourseError!=null) {
+%>
+<p class="error"><%=editCourseError%></p>
+<%
+	}
 %>
 
-<p><%=editCourseError%></p>
-
-<aui:form name="editCourse" action="<%=editCourse%>">
-	<aui:input name="title" title="title" type="text"/>
-	<aui:input name="description" title="description" type="text"/>
-	<aui:input name="provider" title="provider" type="text"/>
-	<aui:input name="listPrice" title="price" type="text"/>
-	
+<aui:form class="inputForm" name="editCourse" action="<%=editCourse%>">
+	<div>Title: <br /><b><%= course.getTitle() %></b></div>
+	<aui:input name="description" label="Description: " type="textarea" value="<%= course.getDescription() %>"/>
+	<aui:input name="provider" label="Provider: " type="text" value="<%= course.getProvider() %>" />
+	<aui:input name="listPrice" label="List Price" type="text" value="<%= course.getListPrice() %>"/>
 	<input type="submit" />
 </aui:form>

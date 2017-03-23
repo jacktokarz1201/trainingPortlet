@@ -90,6 +90,20 @@ public interface AssignmentModel extends BaseModel<Assignment> {
 	public void setMs3employeedb_uid(String ms3employeedb_uid);
 
 	/**
+	 * Returns the assigned date of this assignment.
+	 *
+	 * @return the assigned date of this assignment
+	 */
+	public Date getAssignedDate();
+
+	/**
+	 * Sets the assigned date of this assignment.
+	 *
+	 * @param assignedDate the assigned date of this assignment
+	 */
+	public void setAssignedDate(Date assignedDate);
+
+	/**
 	 * Returns the start date of this assignment.
 	 *
 	 * @return the start date of this assignment

@@ -76,6 +76,7 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 		attributes.put("courses_title", getCourses_title());
 		attributes.put("ms3employeedb_uid", getMs3employeedb_uid());
+		attributes.put("assignedDate", getAssignedDate());
 		attributes.put("startDate", getStartDate());
 		attributes.put("endDate", getEndDate());
 		attributes.put("notes", getNotes());
@@ -98,6 +99,12 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 		if (ms3employeedb_uid != null) {
 			setMs3employeedb_uid(ms3employeedb_uid);
+		}
+
+		Date assignedDate = (Date)attributes.get("assignedDate");
+
+		if (assignedDate != null) {
+			setAssignedDate(assignedDate);
 		}
 
 		Date startDate = (Date)attributes.get("startDate");
@@ -177,6 +184,29 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 						String.class);
 
 				method.invoke(_assignmentRemoteModel, ms3employeedb_uid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public Date getAssignedDate() {
+		return _assignedDate;
+	}
+
+	@Override
+	public void setAssignedDate(Date assignedDate) {
+		_assignedDate = assignedDate;
+
+		if (_assignmentRemoteModel != null) {
+			try {
+				Class<?> clazz = _assignmentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAssignedDate", Date.class);
+
+				method.invoke(_assignmentRemoteModel, assignedDate);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -399,6 +429,7 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 		clone.setCourses_title(getCourses_title());
 		clone.setMs3employeedb_uid(getMs3employeedb_uid());
+		clone.setAssignedDate(getAssignedDate());
 		clone.setStartDate(getStartDate());
 		clone.setEndDate(getEndDate());
 		clone.setNotes(getNotes());
@@ -453,12 +484,14 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{courses_title=");
 		sb.append(getCourses_title());
 		sb.append(", ms3employeedb_uid=");
 		sb.append(getMs3employeedb_uid());
+		sb.append(", assignedDate=");
+		sb.append(getAssignedDate());
 		sb.append(", startDate=");
 		sb.append(getStartDate());
 		sb.append(", endDate=");
@@ -478,7 +511,7 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("com.ms3.training.services.model.Assignment");
@@ -491,6 +524,10 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 		sb.append(
 			"<column><column-name>ms3employeedb_uid</column-name><column-value><![CDATA[");
 		sb.append(getMs3employeedb_uid());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>assignedDate</column-name><column-value><![CDATA[");
+		sb.append(getAssignedDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>startDate</column-name><column-value><![CDATA[");
@@ -524,6 +561,7 @@ public class AssignmentClp extends BaseModelImpl<Assignment>
 
 	private String _courses_title;
 	private String _ms3employeedb_uid;
+	private Date _assignedDate;
 	private Date _startDate;
 	private Date _endDate;
 	private String _notes;
