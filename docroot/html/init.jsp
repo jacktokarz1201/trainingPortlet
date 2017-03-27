@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 
 
 <%@ page import="java.util.List" %>
@@ -11,16 +12,18 @@
 <%@ page import= "com.liferay.portal.model.User" %>
 <%@ page import= "com.liferay.portal.theme.ThemeDisplay" %>
 <%@ page import= "com.liferay.portal.kernel.util.WebKeys" %>
+<%@ page import= "com.liferay.portal.kernel.util.Constants" %>
+<%@ page import= "com.liferay.portal.kernel.util.StringPool"  %>
+<%@ page import= "com.liferay.portal.kernel.util.GetterUtil"%>
+<%@ page import= "com.liferay.portal.model.Role" %>
 <%@ page import="com.ms3.training.services.model.Course" %>
 <%@ page import="com.ms3.training.services.model.Assignment" %>
 <%@ page import="com.ms3.training.services.service.CourseLocalServiceUtil" %>
 <%@ page import="com.ms3.training.services.service.AssignmentLocalServiceUtil" %>
 
-<portlet:defineObjects />
+<%@include file="/html/scripts.jsp" %>
 
-<portlet:renderURL var ="home">
-	<portlet:param name="mvcPath" value="/html/interaction/view.jsp"/>
-</portlet:renderURL>
+<portlet:defineObjects />
 
 <%
 PortletPreferences prefs = renderRequest.getPreferences();
@@ -37,5 +40,3 @@ List<User> users = UserLocalServiceUtil.getUsers(0, UserLocalServiceUtil.getUser
 <%
 	}
 %>
-
-	<a class="headerHomeLink" href="<%=home%>">Go To Home</a>

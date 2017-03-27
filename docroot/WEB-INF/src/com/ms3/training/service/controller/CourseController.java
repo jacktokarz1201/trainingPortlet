@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
@@ -58,6 +59,7 @@ public class CourseController extends MVCPortlet {
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		User user = themeDisplay.getUser();
+		
 		try {
 			List<Organization> organizations = OrganizationLocalServiceUtil.getOrganizations(user.getUserId(), 0, QueryUtil.ALL_POS, null);
 			Long companyId = CompanyThreadLocal.getCompanyId();

@@ -29,33 +29,39 @@ if(user.getFullName().equals("")) {
 else {
 	String addCourseError = (String)request.getAttribute("addCourseError");
 	String isTrainingSupervisor = (String)prefs.getValue("isTrainingSupervisor", "");
+	String configKeyResult = prefs.getValue("configKey", "");
+	boolean confKeyR = GetterUtil.getBoolean(portletPreferences.getValue("configKey", StringPool.TRUE));
+	System.out.println("config Key is: "+configKeyResult);
+	System.out.println("Or is it: "+confKeyR);
 %>
 
 <!-- display the courses in a table, a different table for admins and non-admins -->
 
-<div id="allCoursesDisplay">
-<table class="listTable">
-	<tr class="listTableHeader">
-		<td>Title: </td>
-		<td>Description: </td>
-		<td>Provider: </td>
-		<td>List Price: </td>
-		<td>Course ID: </td>
+<div>
+<table id="allCoursesTable">
+	<thead>
+	<tr>
+		<th>Title: </th>
+		<th>Description: </th>
+		<th>Provider: </th>
+		<th>List Price: </th>
+		<th>Course ID: </th>
 <%
 	if(!isTrainingSupervisor.equals("true")) {
 %>
-		<td>Request Course</td>
+		<th>Request Course</th>
 <%
 	}
 	else {
 %>
-		<td>Edit Course</td>
+		<th>Edit Course</th>
 <%
 	}
 %>	
 
 	</tr>
-
+	</thead>
+	<tbody>
 <%
 	for(Course course: courses) {
 %>	
@@ -119,6 +125,7 @@ else {
 <%
 	}
 %>
+	</tbody>
 </table>
 </div>
 

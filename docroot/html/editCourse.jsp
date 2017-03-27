@@ -1,4 +1,5 @@
 <%@include file="/html/init.jsp" %>
+<%@include file="/html/goHomeHeader.jsp" %>
 
 
 <portlet:actionURL var="editCourse">
