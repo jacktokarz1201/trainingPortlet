@@ -9,6 +9,10 @@
 			<name>contextConfigLocation</name>
 			<value>/WEB-INF/ms3training-portlet.xml</value>
 		</init-param>
+		<init-param>
+	        <name>config-template</name>
+	        <value>/html/config.jsp</value>
+	    </init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>
 			<mime-type>text/html</mime-type>
