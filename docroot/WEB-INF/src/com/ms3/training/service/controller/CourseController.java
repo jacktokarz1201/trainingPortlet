@@ -31,11 +31,14 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Organization;
+import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.service.OrganizationLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
@@ -52,41 +55,22 @@ import com.ms3.training.services.service.CourseLocalServiceUtil;
 public class CourseController extends MVCPortlet {
 	@RenderMapping
 	public String processRenderRequest(RenderRequest request,
-			RenderResponse response, Model model) {		
+			RenderResponse response, Model model) throws ReadOnlyException, ValidatorException, IOException, SystemException {		
 		PortletPreferences prefs = request.getPreferences();
 //for permission and stuff
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		User user = themeDisplay.getUser();
-		try {
-			List<Organization> organizations = OrganizationLocalServiceUtil.getOrganizations(user.getUserId(), 0, QueryUtil.ALL_POS, null);
-			Long companyId = CompanyThreadLocal.getCompanyId();
-			Organization trainingSupervisorOrg = OrganizationLocalServiceUtil.getOrganization(companyId, "TrainingSupervisor");
-			prefs.setValue("isTrainingSupervisor", "false");
-			for(Organization org: organizations){
-	            if(org.getOrganizationId()==trainingSupervisorOrg.getOrganizationId()){                    
-	                prefs.setValue("isTrainingSupervisor", "true"); //flag to determine if he's in trainee organization    
-	                break;
-	            }
-	        }
-			prefs.store();
-	System.out.println("This is a Training Supervisor: "+prefs.getValue("isTrainingSupervisor", ""));
-		} catch (PortalException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SystemException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ReadOnlyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ValidatorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String permissableRole = GetterUtil.getString(prefs.getValue("ableRole", ""));
+	System.out.println("Or is it: "+permissableRole);
+		List<Role> userRoles = RoleLocalServiceUtil.getUserRoles(themeDisplay.getUserId());
+		String hasPermission = "false";
+		for(Role role: userRoles) {
+			if(role.getName().equals(permissableRole)) {
+				hasPermission = "true";
+			}
 		}
+		prefs.setValue("hasPermission", hasPermission);
+		prefs.store();
 		
 //  }
 	

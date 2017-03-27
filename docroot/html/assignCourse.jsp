@@ -1,6 +1,6 @@
 <%@page import="com.ms3.training.services.service.coursesLocalServiceUtil"%>
 <%@include file="/html/init.jsp" %>
-
+<%@include file="/html/goHomeHeader.jsp" %>
 <%
 
 	String assignError = (String)request.getAttribute("assignError");

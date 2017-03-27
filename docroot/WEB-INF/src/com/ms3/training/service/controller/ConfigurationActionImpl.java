@@ -17,9 +17,9 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction{
 	    super.processAction(portletConfig, actionRequest, actionResponse);
 
 	    PortletPreferences prefs = actionRequest.getPreferences();
-
+	    System.out.println("From conf Action");
 	    String somePreferenceKey = prefs.getValue(
-	        "somePreferenceKey", "true");
+	        "configKey", "true");
 
 	    // Add any preference processing here.
 	}

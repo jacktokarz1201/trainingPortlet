@@ -1,3 +1,4 @@
+<%@page import="com.liferay.portal.service.RoleLocalServiceUtil"%>
 <%@include file="/html/init.jsp" %>
 
 
@@ -28,11 +29,8 @@ if(user.getFullName().equals("")) {
 	}
 else {
 	String addCourseError = (String)request.getAttribute("addCourseError");
-	String isTrainingSupervisor = (String)prefs.getValue("isTrainingSupervisor", "");
-	String configKeyResult = prefs.getValue("somePreferenceKey", "");
-	boolean confKeyR = GetterUtil.getBoolean(portletPreferences.getValue("somePreferenceKey", StringPool.TRUE));
-	System.out.println("config Key is: "+configKeyResult);
-	System.out.println("Or is it: "+confKeyR);
+	String hasPermission = prefs.getValue("hasPermission", "");
+	
 %>
 
 <!-- display the courses in a table, a different table for admins and non-admins -->
@@ -47,7 +45,7 @@ else {
 		<th>List Price: </th>
 		<th>Course ID: </th>
 <%
-	if(!isTrainingSupervisor.equals("true")) {
+	if(!hasPermission.equals("true")) {
 %>
 		<th>Request Course</th>
 <%
@@ -67,7 +65,7 @@ else {
 %>	
 	<tr>
 <%
-		if(isTrainingSupervisor.equals("true")) {
+		if(hasPermission.equals("true")) {
 %>
 		<td>
 			<aui:form name="assignCoursePage" action="<%=assignCoursePage%>">
@@ -88,7 +86,7 @@ else {
 		<td><div><%=course.getListPrice() %></div></td>
 		<td><div><%=course.getCourseId() %></div></td>
 <%
-		if(!isTrainingSupervisor.equals("true")) {
+		if(!hasPermission.equals("true")) {
 			boolean alreadyAssigned = false;
 			for(Assignment assignment: assignments) {
 				if(assignment.getCourses_title().equals(course.getTitle())) {
@@ -130,7 +128,7 @@ else {
 </div>
 
 <%
-	if(isTrainingSupervisor.equals("true")) {
+	if(hasPermission.equals("true")) {
 		//only the training supervisors can add or edit courses and approve requests.
 %>
 
