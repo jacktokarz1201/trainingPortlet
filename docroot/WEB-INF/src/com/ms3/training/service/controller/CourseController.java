@@ -55,13 +55,13 @@ import com.ms3.training.services.service.CourseLocalServiceUtil;
 public class CourseController extends MVCPortlet {
 	@RenderMapping
 	public String processRenderRequest(RenderRequest request,
-			RenderResponse response, Model model) throws ReadOnlyException, ValidatorException, IOException, SystemException {		
+			RenderResponse response, Model model) throws Exception {		
 		PortletPreferences prefs = request.getPreferences();
 //for permission and stuff
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		String permissableRole = GetterUtil.getString(prefs.getValue("ableRole", ""));
-	System.out.println("Has permission: "+permissableRole);
+	System.out.println("Permission Role: "+permissableRole);
 		List<Role> userRoles = RoleLocalServiceUtil.getUserRoles(themeDisplay.getUserId());
 		String hasPermission = "false";
 		for(Role role: userRoles) {
@@ -345,7 +345,6 @@ public class CourseController extends MVCPortlet {
 		assignment.setNotes("requested");
 		AssignmentLocalServiceUtil.addAssignment(assignment);
 		request.setAttribute("success", "Your course request has been saved.");
-	System.out.println("Your request has been saved. Or at a minimum, this function worked.");
 	}
 	
 	@ActionMapping(params = "action=approveRequest")
@@ -388,7 +387,6 @@ public class CourseController extends MVCPortlet {
 		if(request.getParameter("certified").equals("true")) {
 			assignment.setCertification(true);
 		}
-		System.out.println(request.getParameter("completed")+" and cert: "+request.getParameter("certified"));
 		AssignmentLocalServiceUtil.updateAssignment(assignment);
 		request.setAttribute("goToPersonalAssignments", "true");
 		request.setAttribute("success", assignment.getCourses_title()+" was updated.");
@@ -405,7 +403,6 @@ public class CourseController extends MVCPortlet {
 	//to be on the safe side
 		assignment.setEndDate(null);
 		assignment.setNotes(request.getParameter("notes"));
-		System.out.println(assignment.toString());
 		AssignmentLocalServiceUtil.updateAssignment(assignment);
 		request.setAttribute("goToPersonalAssignments", "true");
 		request.setAttribute("success", "You have begun "+assignment.getCourses_title());
@@ -431,22 +428,15 @@ public class CourseController extends MVCPortlet {
 	}
 	
 	public Date setDate() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yy");
+		//DateFormat df = new SimpleDateFormat("dd/MM/yy");
 	    Date dateobj = new Date();
-	    System.out.println(df.format(dateobj));
-	    Calendar calobj = Calendar.getInstance();
-	    System.out.println(df.format(calobj.getTime()));
 	    return dateobj;
 	}
 	
 	public boolean checkIfInAssignments(String screenName, String title) throws SystemException {
 		List<Assignment> assignments = AssignmentLocalServiceUtil.getAssignments(0, AssignmentLocalServiceUtil.getAssignmentsCount());
-		System.out.println("Searching title: "+title);
-		System.out.println("searching name: "+screenName);
 		for(Assignment assignment: assignments) {
-			System.out.println("Assignment title -> "+assignment.getCourses_title());
 			if(assignment.getCourses_title().equals(title)) {
-				System.out.println("titles match...");
 				if(assignment.getMs3employeedb_uid().equals(screenName)) {
 					return true;
 				}
@@ -461,38 +451,11 @@ public class CourseController extends MVCPortlet {
 	
 	@ActionMapping(params = "action=viewCourses")
 	public void viewCourses(ActionRequest request, ActionResponse response) {
-		//System.out.println("ajax called");		
-		
-//		request.setAttribute("viewCall", "viewTime");
 		
 		List<Course> courseResults;
 		try {
-//			String courseIdstr = request.getParameter("courseId");
-//			long courseId = Long.parseLong(courseIdstr);
-//			System.out.println("courseId: "+courseId);
-			
-			//courses = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
-			//DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(Course.class).add(PropertyFactoryUtil.forName("courseId").eq(new Long(courseId)));
-			//courses = CourseLocalServiceUtil.dynamicQuery(dynamicQuery,0,CourseLocalServiceUtil.getCoursesCount());
-			//courses = CourseLocalServiceUtil.findByCourseId(courseId);
-
-			
 			courseResults = CourseLocalServiceUtil.getCourses(0, CourseLocalServiceUtil.getCoursesCount());
-			//System.out.println("objectCourseResults.size: "+objectCourseResults.size());
-			
-			//Map<Long, CourseModel> courseResults = new HashMap<Long, CourseModel>();
-			
-			for(Course objectCourse: courseResults){
-				
-				System.out.println("courseId: "+objectCourse.getCourseId()+" \ncourseName: "+objectCourse.getTitle()+" \ncourseDescription: "+objectCourse.getDescription()+" \netc...\n");
-				
-			}
-			
-			//System.out.println("courses: "+courses.toString());
-//			Gson coursesGson = new GsonBuilder().disableHtmlEscaping().create();
-//			String coursesJson = coursesGson.toJson(courseResults);			
-//			response.getWriter().println(coursesJson);
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -524,8 +487,6 @@ public class CourseController extends MVCPortlet {
 	//CHECK title against all existing ones
 			for(Course objectCourse: courseResults) {
 				if(objectCourse.getTitle().equals(searchCriteria)) {
-					System.out.println("You found it! \n courseId: "+objectCourse.getCourseId()+" \ncourseName: "+objectCourse.getTitle()+
-							" \ncourseDescription: "+objectCourse.getDescription()+" \netc...\n");
 					prefs.setValue("findCourseError", "");
 					prefs.store();
 					return;
