@@ -1,3 +1,9 @@
+body {
+	background-color:#f9f9f9;
+	padding:40px;
+	margin-top:-20px !important;
+}
+
 .tableTitle {
 	margin-bottom: 0px;
 	font-weight: bold;
@@ -19,6 +25,38 @@
 .listTableHeader {
 	font-weight: bold;
 	font-size: 16px;
+}
+
+.tableTitle {
+	background: #2aaae6!important;
+	color: #FFF;
+    font-size: 18px;
+    line-height: 40px;
+    width: 100%;
+    padding: 10px;
+}
+.tableHolder {
+	min-width: 1200px;
+	width:100%;
+	box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+	border: 1px black solid;
+	padding: 10px;
+}
+.defaultTable {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	vertical-align: middle;
+	text-align: center;
+}
+.tableHead {    
+    font-weight: bold;
+    font-size: 14px;
+    color: #666666;
+}
+.tableBody {
+	font-size: 14px;
+    color: #666666;
+   	border: 1px black solid;
+	border-collapse: collapse;
 }
 
 .listTable td {
@@ -51,7 +89,11 @@
 	color: blue;
 	text-decoration: underline;
 	border: 0px;
-	background-color: white;
+	background-color: beige;
 }
 
+.normalInput {
+	margin-bottom: 5px;
+	color: green;
+}
 

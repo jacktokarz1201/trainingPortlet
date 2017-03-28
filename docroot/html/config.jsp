@@ -18,7 +18,7 @@ List<Role> roles = RoleLocalServiceUtil.getRoles(companyId);
 <%
 	for(Role role: roles) {
 %>
-		<aui:option label="<%= role.getName() %> value="<%= role.getName() %>" selected="<%= selectedRole.equals(role.getName()) %>"></aui:option>
+		<aui:option label="<%= role.getName() %>" value="<%= role.getName() %>" selected="<%= selectedRole.equals(role.getName()) %>"></aui:option>
 <%
 	}
 %>

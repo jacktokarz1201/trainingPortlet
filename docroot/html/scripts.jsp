@@ -3,9 +3,8 @@
 
 <script>
 $(document).ready(function() {
-    $('#allCoursesTable').DataTable( {
-        ordering: true
-    } );
+	$('table').each(function(){
+	    $(this).DataTable();
+	});
 } );
-console.log("In the scripts page");
 </script>

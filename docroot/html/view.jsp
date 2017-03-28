@@ -35,15 +35,15 @@ else {
 
 <!-- display the courses in a table, a different table for admins and non-admins -->
 
-<div>
-<table id="allCoursesTable">
-	<thead>
+<div class="tableTitle">Courses</div>
+<div class="tableHolder">
+<table class="defaultTable display cell-border compact">
+	<thead class="tableHead">
 	<tr>
 		<th>Title: </th>
 		<th>Description: </th>
 		<th>Provider: </th>
 		<th>List Price: </th>
-		<th>Course ID: </th>
 <%
 	if(!hasPermission.equals("true")) {
 %>
@@ -59,7 +59,7 @@ else {
 
 	</tr>
 	</thead>
-	<tbody>
+	<tbody class="tableBody">
 <%
 	for(Course course: courses) {
 %>	
@@ -84,7 +84,6 @@ else {
 		<td><div><%=course.getDescription() %></div></td>
 		<td><div><%=course.getProvider() %></div></td>
 		<td><div><%=course.getListPrice() %></div></td>
-		<td><div><%=course.getCourseId() %></div></td>
 <%
 		if(!hasPermission.equals("true")) {
 			boolean alreadyAssigned = false;
@@ -141,8 +140,8 @@ else {
 %>
 
 <aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
-	<aui:input name="title" type="text"/>
-	<aui:input name="description" type="textarea"/>
+	<aui:input cssClass="normalInput" name="title" type="text"/>
+	<aui:input cssClass="normalInput" name="description" type="textarea"/>
 	<aui:input name="provider" type="text"/>
 	<aui:input name="listPrice" type="text"/>
 	
@@ -150,13 +149,17 @@ else {
 	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
 </aui:form>
 
-		<p>Course Requests</p>
-		<table class="listTable">
-			<tr class="listTableHeader">
+	<div class="tableTitle">Course Requests</div>
+	<div class="tableHolder">
+		<table class="defaultTable display cell-border compact">
+		<thead class="tableHead">
+			<tr>
 				<td>Employee</td>
 			    <td>Course Title</td>
 			    <td>Approve Request</td>
 			</tr>
+		</thead>
+		<tbody class="tableBody">
 	<%
 		for(Assignment assignment: assignments) {
 			if(assignment.getAssignedDate()==null && assignment.getNotes().equals("requested")) {
@@ -176,7 +179,9 @@ else {
 		}
 	}
 	%>
+		</tbody>
 		</table>
+	</div>
 
 
 
