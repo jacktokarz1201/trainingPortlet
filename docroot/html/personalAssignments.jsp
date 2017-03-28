@@ -56,15 +56,19 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Courses in Progress</div>
-		<table class="listTable">
-			<tr class="listTableHeader">
+		<table>
+			<thead>
+			<tr>
 			    <td>Course Title</td>
 			    <td>Date Started</td>
 			    <td>Progress</td>
 			    <td>Notes</td>
 			    <td>Work on it</td>
 			</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: inProgress) {
 %>
@@ -83,7 +87,9 @@
 <%
 		}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 		if(assigned.isEmpty()) {
@@ -93,14 +99,18 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Assigned Courses</div>
-		<table class="listTable">
-			<tr class="listTableHeader">
+		<table>
+			<thead>
+			<tr>
 			    <td>Course Title</td>
 			    <td>Date Assigned</td>
 			    <td>Notes</td>
 			    <td>Start Training</td>
 			</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: assigned) {
 %>
@@ -118,7 +128,9 @@
 <%
 			}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 		if(requested.isEmpty()) {
@@ -128,14 +140,18 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Requested Courses</div>
-		<table class="listTable">
-			<tr class="listTableHeader">
+		<table>
+			<thead>
+			<tr>
 			    <td>Course Title</td>
 			    <td>Provider</td>
 			    <td>List Price</td>
 			    <td>Notes</td>
 			</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: requested) {
 			Course course = CourseLocalServiceUtil.getCourse(assignment.getCourses_title());
@@ -149,7 +165,9 @@
 <%
 			}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 		if(completed.isEmpty()) {
@@ -159,15 +177,19 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Completed Courses</div>
-		<table class="listTable">
-			<tr class="listTableHeader">
+		<table>
+			<thead>
+			<tr>
 			    <td>Course Title</td>
 			    <td>Start Date</td>
 			    <td>End Date</td>
 			    <td>Certified</td>
 			    <td>Notes</td>
 			</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: completed) {
 %>
@@ -181,7 +203,9 @@
 <%
 			}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 	}

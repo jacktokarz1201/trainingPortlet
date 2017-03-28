@@ -5,9 +5,6 @@
 <portlet:actionURL var="addCourse">
    <portlet:param name="action" value="addCourse" />
 </portlet:actionURL>
-<portlet:actionURL var="editCoursePage">
-   <portlet:param name="action" value="editCoursePage" />
-</portlet:actionURL>
 <portlet:actionURL var="assignCoursePage">
    <portlet:param name="action" value="assignCoursePage" />
 </portlet:actionURL>
@@ -35,10 +32,10 @@ else {
 
 <!-- display the courses in a table, a different table for admins and non-admins -->
 
-<div class="tableTitle">Courses</div>
 <div class="tableHolder">
-<table class="defaultTable display cell-border compact">
-	<thead class="tableHead">
+<div class="tableTitle">Courses</div>
+<table>
+	<thead>
 	<tr>
 		<th>Title: </th>
 		<th>Description: </th>
@@ -50,16 +47,11 @@ else {
 		<th>Request Course</th>
 <%
 	}
-	else {
-%>
-		<th>Edit Course</th>
-<%
-	}
 %>	
 
 	</tr>
 	</thead>
-	<tbody class="tableBody">
+	<tbody>
 <%
 	for(Course course: courses) {
 %>	
@@ -106,17 +98,6 @@ else {
 <%
 			}
 		}
-		else {
-%>
-
-			<td>
-					<aui:form name="editCoursePage" action="<%=editCoursePage%>">
-						<aui:input name="editTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
-						<input id="doEdit" type="submit" value="Edit"/>
-					</aui:form>
-
-<%
-		}
 %>
 	</tr>
 <%
@@ -140,26 +121,26 @@ else {
 %>
 
 <aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
-	<aui:input cssClass="normalInput" name="title" type="text"/>
-	<aui:input cssClass="normalInput" name="description" type="textarea"/>
-	<aui:input name="provider" type="text"/>
-	<aui:input name="listPrice" type="text"/>
+	<aui:input cssClass="normalInput" name="title" label="Title" type="text"/>
+	<aui:input class="normalInput" name="description" label="Description" type="textarea"/>
+	<aui:input name="provider" label="Provider" type="text"/>
+	<aui:input name="listPrice" label="List Price" type="text"/>
 	
 	<input id="submitCourse" type="submit" style="display:none;"/>
 	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
 </aui:form>
 
-	<div class="tableTitle">Course Requests</div>
 	<div class="tableHolder">
-		<table class="defaultTable display cell-border compact">
-		<thead class="tableHead">
+	<div class="tableTitle">Course Requests</div>
+		<table>
+		<thead>
 			<tr>
 				<td>Employee</td>
 			    <td>Course Title</td>
 			    <td>Approve Request</td>
 			</tr>
 		</thead>
-		<tbody class="tableBody">
+		<tbody>
 	<%
 		for(Assignment assignment: assignments) {
 			if(assignment.getAssignedDate()==null && assignment.getNotes().equals("requested")) {

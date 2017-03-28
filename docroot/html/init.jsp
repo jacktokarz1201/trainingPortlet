@@ -34,7 +34,7 @@ List<User> users = UserLocalServiceUtil.getUsers(0, UserLocalServiceUtil.getUser
 	String success = (String)request.getAttribute("success");
 	if(success!=null) {
 %>
-		<p id="success"><%= success %></p>
+		<p id="successText"><%= success %></p>
 <%
 	}
 %>

@@ -23,15 +23,23 @@
 <portlet:actionURL var="deleteCourse">
 	<portlet:param name="action" value="deleteCourse" />
 </portlet:actionURL>
+<portlet:actionURL var="editCoursePage">
+   <portlet:param name="action" value="editCoursePage" />
+</portlet:actionURL>
 
-<table class="listTable">
-	<tr class="listTableHeader">
+<div class="tableHolder">
+<table>
+	<thead>
+	<tr>
 		<td>Title</td>
 		<td>Description</td>
 		<td>Provider</td>
 		<td>Course ID</td>
 		<td>List Price</td>
+		<td>Edit</td>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
 		<td>
 			<div><%=course.getTitle() %></div>
@@ -48,8 +56,16 @@
 		<td>
 			<div><%=course.getListPrice() %></div>
 		</td>
+		<td>
+			<aui:form name="editCoursePage" action="<%=editCoursePage%>">
+				<aui:input name="editTitle" label="" value="<%= course.getTitle() %>" style="display:none;" />
+				<input id="doEdit" type="submit" value="Edit"/>
+			</aui:form>
+		</td>
 	</tr>
+	</tbody>
 </table>
+</div>
 
 
 	<p><aui:a href= "<%= deleteCourse %>">Delete this Course!</aui:a></p>
@@ -62,7 +78,7 @@ for(Assignment assignment: assignments) {
 }
 if(relevant.isEmpty()) {
 %>
-	<p>This course has not been assigned to anybody yet.</p>
+	<p class="tableReplacement">This course has not been assigned to anybody yet.</p>
 <%
 }
 else {
@@ -94,14 +110,18 @@ else {
 	}
 	else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Currently Working on this Course</div>
-		<table class="listTable">
+		<table>
+			<thead>
 			<tr>
 			    <th>Screen Name</th>
 			    <th>Date Started</th>
 			    <th>Progress</th>
 			    <th>Notes</th>
 			</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: inProgress) {
 %>
@@ -114,7 +134,9 @@ else {
 <%
 			}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 	if(assigned.isEmpty()) {
@@ -124,23 +146,29 @@ else {
 	}
 	else {
 %>
-		<div class="tableTitle">This course has been assigned to </div>
-		<table class="listTable">
-		<tr class="listTableHeader">
-			<td>Name</td>
-			<td>Date Assigned</td>
-		</tr>
+		<div class="tableHolder">
+			<div class="tableTitle">This course has been assigned to </div>
+			<table>
+				<thead>
+				<tr>
+					<td>Name</td>
+					<td>Date Assigned</td>
+				</tr>	
+				</thead>
+				<tbody>
 <%
 	for(Assignment assignment: assigned) {
 %>
-		<tr>
-			<td><%= assignment.getMs3employeedb_uid() %></td>
-			<td><%= assignment.getAssignedDate() %></td>
-		</tr>
+				<tr>
+					<td><%= assignment.getMs3employeedb_uid() %></td>
+					<td><%= assignment.getAssignedDate() %></td>
+				</tr>
 <%
 		}
 %>
-	</table>
+				</tbody>
+			</table>
+		</div>
 <% 
 	}
 	if(requested.isEmpty()) {
@@ -150,12 +178,16 @@ else {
 	}
 	else {
 %>
+<div class="tableHolder">
 	<div class="tableTitle">This course has been requested by </div>
-	<table class="listTable">
-		<tr class="listTableHeader">
+	<table>
+		<thead>
+		<tr>
 			<td>Name</td>
 			<td>Approve</td>
 		</tr>
+		</thead>
+		<tbody>
 <%
 		for(Assignment assignment: requested) {
 %>
@@ -171,7 +203,9 @@ else {
 <%
 		}
 %>
+		</tbody>
 	</table>
+</div>
 <% 
 	}
 	if(completed.isEmpty()) {
@@ -181,27 +215,33 @@ else {
 	}
 	else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">This course has been completed by </div>
-	<table class="listTable">
-		<tr class="listTableHeader">
-			<td>Name</td>
-			<td>Start Date</td>
-			<td>End Date</td>
-			<td>Certified</td>
-		</tr>
+		<table>
+			<thead>
+				<tr>
+					<td>Name</td>
+					<td>Start Date</td>
+					<td>End Date</td>
+					<td>Certified</td>
+				</tr>
+			</thead>
+			<tbody>
 <%
 		for(Assignment assignment: completed) {
 %>
-		<tr>
-			<td><%= assignment.getMs3employeedb_uid() %></td>
-			<td><%= assignment.getStartDate() %></td>
-			<td><%= assignment.getEndDate() %></td>
-			<td><%= assignment.getCertification() %></td>
-		</tr>
+				<tr>
+					<td><%= assignment.getMs3employeedb_uid() %></td>
+					<td><%= assignment.getStartDate() %></td>
+					<td><%= assignment.getEndDate() %></td>
+					<td><%= assignment.getCertification() %></td>
+				</tr>
 <%
 		}
 %>
-	</table>
+			</tbody>
+		</table>
+	</div>
 <% 
 	}
 
@@ -214,17 +254,18 @@ else {
 <%
 	}
 %>
-<aui:form class="inputForm" name="assignToUser" action="<%=assignToUser%>">
-	<aui:input name="user" label="Screen Name" type="text"/>
-	<input value="Assign By Screen Name	" type="submit" />
-</aui:form>
 
 <p>Available Users</p>
-<table class="listTable">
-	<tr class="listTableHeader">
-		<td>Name</td>
-		<td>Screen Name</td>
-	</tr>
+<div class="tableHolder">
+	<table>
+		<thead>
+		<tr>
+			<td>Name</td>
+			<td>Screen Name</td>
+			<td>Assign This Course</td>
+		</tr>
+		</thead>
+		<tbody>
 <%
 for(User user: users) {
 	boolean skip= false;
@@ -235,20 +276,25 @@ for(User user: users) {
 	}
 	if(!skip) {
 %>
-	<tr>
-		<td><%= user.getFullName() %></td>
-		<td>
-			<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
-				<aui:input name="userAssignmentsScreenName" label="" value="<%= user.getScreenName() %>" style="display:none;" />
-				<input class="linkImitation" id="doView" type="submit" value="<%= user.getScreenName() %>" />
-			</aui:form>
-		</td>
-	</tr>	
+		<tr>
+			<td><%= user.getFullName() %></td>
+			<td>
+				<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+					<aui:input name="userAssignmentsScreenName" label="" value="<%= user.getScreenName() %>" style="display:none;" />
+					<input class="linkImitation" id="doView" type="submit" value="<%= user.getScreenName() %>" />
+				</aui:form>
+			</td>
+			<td>
+				<aui:form class="inputForm" name="assignToUser" action="<%=assignToUser%>">
+					<aui:input name="user" label="" value="<%= user.getScreenName() %>" style="display:none;"/>
+					<input value="Assign By Screen Name	" type="submit" />
+				</aui:form>
+			</td>
+		</tr>	
 <%
 	}
 }
 %>
-</table>
-
-
-
+		</tbody>
+	</table>
+</div>

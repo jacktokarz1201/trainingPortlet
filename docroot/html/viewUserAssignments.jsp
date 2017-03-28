@@ -51,14 +51,18 @@
 		}
 		else {
 %>
-			<div class="tableTitle">Courses in Progress</div>
-			<table class="listTable">
-				<tr>
+	<div class="tableHolder">
+		<div class="tableTitle">Courses in Progress</div>
+		<table>
+			<thead>
+			<tr>
 				    <th>Course Title</th>
 				    <th>Date Started</th>
 				    <th>Progress</th>
 				    <th>Notes</th>
 				</tr>
+			</thead>
+			<tbody>
 <%
 			for(Assignment assignment: inProgress) {
 %>
@@ -71,7 +75,9 @@
 <%
 			}
 %>
-			</table>
+			</tbody>
+		</table>
+	</div>
 			
 <%
 		}
@@ -82,13 +88,17 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Assigned Courses</div>
-		<table class="listTable">
+		<table>
+			<thead>
 			<tr>
 			    <th>Course Title</th>
 			    <th>Date Assigned</th>
 			    <th>Notes</th>
 			</tr>
+			</thead>
+			<tbody>
 <%
 			for(Assignment assignment: assigned) {
 %>
@@ -100,7 +110,9 @@
 <%
 			}
 %>
-	</table>
+			</tbody>
+		</table>
+	</div>
 <%
 		}
 		if(requested.isEmpty()) {
@@ -110,8 +122,10 @@
 		}
 		else {
 %>
+	<div class="tableHolder">
 		<div class="tableTitle">Requested Courses</div>
-		<table class="listTable">
+		<table>
+			<thead>
 			<tr>
 			    <th>Course Title</th>
 			    <th>Provider</th>
@@ -119,6 +133,8 @@
 			    <th>Notes</th>
 			    <th>Approve</th>
 			</tr>
+			</thead>
+			<tbody>
 <%
 			for(Assignment assignment: requested) {
 				Course course = CourseLocalServiceUtil.getCourse(assignment.getCourses_title());
@@ -138,7 +154,9 @@
 <%
 			}
 %>
+			</tbody>
 		</table>
+	</div>
 <%
 		}
 		if(completed.isEmpty()) {
@@ -148,8 +166,10 @@
 		}
 		else {
 %>
-			<div class="tableTitle">Completed Courses</div>
-			<table class="listTable">
+	<div class="tableHolder">
+		<div class="tableTitle">Compelted Courses</div>
+		<table>
+			<thead>
 				<tr>
 				    <th>Course Title</th>
 				    <th>Start Date</th>
@@ -157,6 +177,8 @@
 				    <th>Certified</th>
 				    <th>Notes</th>
 				</tr>
+			</thead>
+			<tbody>
 <%
 			for(Assignment assignment: completed) {
 %>
@@ -170,7 +192,9 @@
 <%
 			}
 %>
-			</table>
+			</tbody>
+		</table>
+	</div>
 <%
 		}
 	}

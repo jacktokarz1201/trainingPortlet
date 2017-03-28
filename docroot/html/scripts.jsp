@@ -5,6 +5,7 @@
 $(document).ready(function() {
 	$('table').each(function(){
 	    $(this).DataTable();
+	    $(this).addClass('defaultTable display cell-border compact');
 	});
 } );
 </script>
