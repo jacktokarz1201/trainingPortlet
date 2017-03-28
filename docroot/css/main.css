@@ -4,6 +4,10 @@ body {
 	margin-top:-20px !important;
 }
 
+div {
+	margin-top: 20px;
+}
+
 .normalInput {
 	margin: 0px;
 }
@@ -25,6 +29,7 @@ body {
     padding: 10px;
 	margin-bottom: 10px;
 	font-weight: bold;
+	margin-top: 0px;
 }
 .tableHolder {
 	min-width: 1200px;
@@ -38,12 +43,18 @@ body {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	vertical-align: middle;
 	text-align: center;
-	width:90%;
+	width:45%;
+	position: relative;
+	float: left;
 }
 thead {    
     font-weight: bold;
     font-size: 14px;
     color: #666666;
+}
+thead td {
+	border: 1px black solid;
+	border-collapse: collapse;
 }
 tbody {
 	font-size: 14px;
@@ -74,6 +85,12 @@ tbody td {
 	text-decoration: underline;
 	border: 0px;
 	background-color: inherit;
+}
+.bigLink {
+	margin-left: 20px;
+	font-size: 18px;
+	font-weight: bold;
+	text-decoration: underline;
 }
 
 

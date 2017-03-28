@@ -166,7 +166,7 @@ else {
 
 
 
-<aui:a href="<%= personalAssignmentsPage %>">Check out your courses.</aui:a>
+<aui:a cssClass="bigLink" href="<%= personalAssignmentsPage %>">Check out your courses.</aui:a>
 
 <%
 //ending the original if/else checking if they're signed in.

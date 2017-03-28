@@ -4,8 +4,19 @@
 <script>
 $(document).ready(function() {
 	$('table').each(function(){
-	    $(this).DataTable();
 	    $(this).addClass('defaultTable display cell-border compact');
+	    if( $(this).hasClass("plain")) {
+	    	$(this).DataTable({
+	    		"paging": false,
+	    		"searching": false,
+	    		"info": false
+	    	});
+	    }
+	    else {
+	    	$(this).DataTable({
+	    		"pageLength": 5
+	    	});
+	    }
 	});
 } );
 </script>

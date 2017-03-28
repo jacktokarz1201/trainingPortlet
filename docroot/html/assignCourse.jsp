@@ -28,7 +28,7 @@
 </portlet:actionURL>
 
 <div class="tableHolder">
-<table>
+<table class="plain">
 	<thead>
 	<tr>
 		<td>Title</td>
@@ -68,7 +68,7 @@
 </div>
 
 
-	<p><aui:a href= "<%= deleteCourse %>">Delete this Course!</aui:a></p>
+	<div><aui:a cssClass="bigLink" href= "<%= deleteCourse %>">Delete this Course!</aui:a></div>
 
 <%
 for(Assignment assignment: assignments) {
@@ -78,7 +78,7 @@ for(Assignment assignment: assignments) {
 }
 if(relevant.isEmpty()) {
 %>
-	<p class="tableReplacement">This course has not been assigned to anybody yet.</p>
+	<div class="tableReplacement">This course has not been assigned to anybody yet.</div>
 <%
 }
 else {
@@ -105,7 +105,7 @@ else {
 
 	if(inProgress.isEmpty()) {
 %>
-	<p class="tableReplacement">Nobody is currently working on this course</p>
+	<div class="tableReplacement">Nobody is currently working on this course</div>
 <%
 	}
 	else {
@@ -141,7 +141,7 @@ else {
 		}
 	if(assigned.isEmpty()) {
 %>
-	<p class="tableReplacement">This course is not currently assigned to anybody</p>
+	<div class="tableReplacement">This course is not currently assigned to anybody</div>
 <%
 	}
 	else {
@@ -173,7 +173,7 @@ else {
 	}
 	if(requested.isEmpty()) {
 %>
-	<p class="tableReplacement">There are no outstanding requests to take this course</p>
+	<div class="tableReplacement">There are no outstanding requests to take this course</div>
 <%
 	}
 	else {
@@ -210,7 +210,7 @@ else {
 	}
 	if(completed.isEmpty()) {
 %>
-	<p class="tableReplacement">Nobody has completed this course yet</p>
+	<div class="tableReplacement">Nobody has completed this course yet</div>
 <%
 	}
 	else {
@@ -255,8 +255,8 @@ else {
 	}
 %>
 
-<p>Available Users</p>
 <div class="tableHolder">
+	<div class="tableTitle">Available Users</div>
 	<table>
 		<thead>
 		<tr>
@@ -287,7 +287,7 @@ for(User user: users) {
 			<td>
 				<aui:form class="inputForm" name="assignToUser" action="<%=assignToUser%>">
 					<aui:input name="user" label="" value="<%= user.getScreenName() %>" style="display:none;"/>
-					<input value="Assign By Screen Name	" type="submit" />
+					<input value="Assign" type="submit" />
 				</aui:form>
 			</td>
 		</tr>	
