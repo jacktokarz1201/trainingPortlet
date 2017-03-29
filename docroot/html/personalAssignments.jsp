@@ -167,7 +167,7 @@
 		}
 		if(completed.isEmpty()) {
 %>
-		<p class="tableReplacement">you have not completed any courses yet</p>
+		<p class="tableReplacement">You have not completed any courses yet.</p>
 <%
 		}
 		else {

@@ -5,18 +5,9 @@
 $(document).ready(function() {
 	$('table').each(function(){
 	    $(this).addClass('defaultTable display cell-border compact');
-
-		if($('table').hasClass('plain')) {
-			$(this).DataTable({
-				"paging": false,
-				"searching": false
-			});
-		}
-		else {
-		    $(this).DataTable({
-		    	"pageLength": 5
-		    });
-		}
+	    $(this).DataTable({
+	    	"pageLength": 5
+	    });
 	});
 } );
 

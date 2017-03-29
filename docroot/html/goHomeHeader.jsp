@@ -5,4 +5,4 @@
 </portlet:renderURL>
 
 
-<a class="headerHomeLink" href="<%=home%>">Go Home</a>
+<a id="headerHomeLink" href="<%=home%>">Go Home</a>
