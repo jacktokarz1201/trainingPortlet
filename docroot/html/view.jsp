@@ -120,7 +120,10 @@ else {
 	}
 %>
 
-<aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
+
+
+<div id = "makeCourseDialog" title = "Course Creation">
+	<aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
 	<aui:input cssClass="normalInput" name="title" label="Title" type="text"/>
 	<aui:input class="normalInput" name="description" label="Description" type="textarea"/>
 	<aui:input name="provider" label="Provider" type="text"/>
@@ -129,6 +132,12 @@ else {
 	<input id="submitCourse" type="submit" style="display:none;"/>
 	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
 </aui:form>
+	
+</div>
+
+<button id = "opener">Make Course</button>
+
+
 
 	<div class="tableHolder">
 	<div class="tableTitle">Course Requests</div>
@@ -174,10 +183,5 @@ else {
 %>
 
 <script>
-function initialValidation(){
-		document.getElementById("submitCourse").click();
-	}
-function makeSelectHappen(){
-	document.getElementById("submitSelect").click();
-}
+
 </script>

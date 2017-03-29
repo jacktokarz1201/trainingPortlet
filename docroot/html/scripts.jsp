@@ -4,8 +4,47 @@
 <script>
 $(document).ready(function() {
 	$('table').each(function(){
-	    $(this).DataTable();
 	    $(this).addClass('defaultTable display cell-border compact');
+
+		if($('table').hasClass('plain')) {
+			$(this).DataTable({
+				"paging": false,
+				"searching": false
+			});
+		}
+		else {
+		    $(this).DataTable({
+		    	"pageLength": 5
+		    });
+		}
 	});
 } );
+
+
+$(function() {
+    $( "#makeCourseDialog" ).dialog({
+       autoOpen: false,  
+    });
+    $( "#opener" ).click(function() {
+       $( "#makeCourseDialog" ).dialog( "open" );
+    });
+ });
+ 
+$(function() {
+    $( "#deleteCourseDialog" ).dialog({
+       autoOpen: false,  
+    });
+    $( "#deleteOpener" ).click(function() {
+       $( "#deleteCourseDialog" ).dialog( "open" );
+    });
+ });
+ 
+ 
+function initialValidation(){
+	document.getElementById("submitCourse").click();
+}
+function makeSelectHappen(){
+	document.getElementById("submitSelect").click();
+}
+
 </script>

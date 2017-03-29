@@ -28,7 +28,7 @@
 </portlet:actionURL>
 
 <div class="tableHolder">
-<table>
+<table class="plain">
 	<thead>
 	<tr>
 		<td>Title</td>
@@ -67,8 +67,11 @@
 </table>
 </div>
 
-
-	<p><aui:a href= "<%= deleteCourse %>">Delete this Course!</aui:a></p>
+<div id = "deleteCourseDialog" title = "Are You Sure?">
+	<p><aui:a href= "<%= deleteCourse %>">Yes!</aui:a></p>
+</div>
+	
+	<button id = "deleteOpener">Delete This Course!</button>
 
 <%
 for(Assignment assignment: assignments) {

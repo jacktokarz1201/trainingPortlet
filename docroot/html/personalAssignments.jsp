@@ -42,11 +42,6 @@
 				completed.add(assignment);
 			}
 		}
-		System.out.println("Relevant: "+relevant.toString());
-		System.out.println("In Progress: "+inProgress.toString());
-		System.out.println("Assigned: "+assigned.toString());
-		System.out.println("Requested: "+requested.toString());
-		System.out.println("Completed: "+completed.toString());
 		
 //show off the lists
 		if(inProgress.isEmpty()) {
