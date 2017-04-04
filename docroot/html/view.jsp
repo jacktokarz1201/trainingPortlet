@@ -1,4 +1,3 @@
-<%@page import="com.liferay.portal.service.RoleLocalServiceUtil"%>
 <%@include file="/html/init.jsp" %>
 
 
@@ -124,14 +123,14 @@ else {
 
 <div id = "makeCourseDialog" title = "Course Creation">
 	<aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
-	<aui:input cssClass="normalInput" name="title" label="Title" type="text"/>
-	<aui:input class="normalInput" name="description" label="Description" type="textarea"/>
-	<aui:input name="provider" label="Provider" type="text"/>
-	<aui:input name="listPrice" label="List Price" type="text"/>
-	
-	<input id="submitCourse" type="submit" style="display:none;"/>
-	<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
-</aui:form>
+		<aui:input cssClass="normalInput" name="title" label="Title" type="text"/>
+		<aui:input class="normalInput" name="description" label="Description" type="textarea"/>
+		<aui:input name="provider" label="Provider" type="text"/>
+		<aui:input name="listPrice" label="List Price" type="text"/>
+		
+		<input id="submitCourse" type="submit" style="display:none;"/>
+		<aui:button name="submit" value="Make Course" onclick="initialValidation();"/>
+	</aui:form>
 	
 </div>
 

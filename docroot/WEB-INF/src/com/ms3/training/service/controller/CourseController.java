@@ -1,9 +1,6 @@
 package com.ms3.training.service.controller;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +11,6 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.ValidatorException;
 
@@ -23,21 +19,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import com.liferay.portal.NoSuchUserException;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
-import com.liferay.portal.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -102,14 +94,6 @@ public class CourseController extends MVCPortlet {
 		if(viewUserAssignmentsString != null) {
 			return "viewUserAssignments";
 		}
-		String updateAssignmentString = (String)request.getAttribute("goToUpdateAssignment");
-		if(updateAssignmentString != null) {
-			return "updateAssignment";
-		}
-		String startAssignmentString = (String)request.getAttribute("goToStartAssignment");
-		if(startAssignmentString != null) {
-			return "startAssignment";
-		}
 		
 		
 		return "view";
@@ -145,24 +129,6 @@ public class CourseController extends MVCPortlet {
 		prefs.setValue("userScreenName", request.getParameter("userAssignmentsScreenName"));
 		prefs.store();
 		request.setAttribute("goToUserAssignments", "true");
-	}
-	
-	@ActionMapping(params = "action=updateAssignmentPage")
-	public void updateAssignmentPage(ActionRequest request, ActionResponse response) throws Exception{
-		PortletPreferences prefs = request.getPreferences();
-		String updateAssignmentId = request.getParameter("requestId");
-		prefs.setValue("updateAssignmentId", updateAssignmentId);
-		prefs.store();
-		request.setAttribute("goToUpdateAssignment", "true");
-	}
-	
-	@ActionMapping(params = "action=startAssignmentPage")
-	public void startAssignmentPage(ActionRequest request, ActionResponse response) throws Exception{
-		PortletPreferences prefs = request.getPreferences();
-		String startAssignmentId = request.getParameter("startAssignmentId");
-		prefs.setValue("startAssignmentId", startAssignmentId);
-		prefs.store();
-		request.setAttribute("goToStartAssignment", "true");
 	}
 	
 	

@@ -4,7 +4,7 @@ create table course_Assignment (
 	assignedDate DATE null,
 	startDate DATE null,
 	endDate DATE null,
-	notes VARCHAR(75) null,
+	notes VARCHAR(2000) null,
 	cost VARCHAR(75) null,
 	certification BOOLEAN,
 	assignmentId LONG not null primary key

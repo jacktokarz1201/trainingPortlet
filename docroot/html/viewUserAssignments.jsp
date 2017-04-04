@@ -161,13 +161,13 @@
 		}
 		if(completed.isEmpty()) {
 %>
-			<p class="tableReplacement"><%= theirScreenName %> has not completed any courses yet</p>
+			<p class="tableReplacement"><%= theirScreenName %> has not completed any courses yet.</p>
 <%
 		}
 		else {
 %>
 	<div class="tableHolder">
-		<div class="tableTitle">Compelted Courses</div>
+		<div class="tableTitle">Completed Courses</div>
 		<table>
 			<thead>
 				<tr>

@@ -1,15 +1,18 @@
 <%@include file="/html/init.jsp" %>
 <%@include file="/html/goHomeHeader.jsp" %>
 
-<portlet:actionURL var="updateAssignmentPage">
-	<portlet:param name="action" value="updateAssignmentPage" />
+<portlet:actionURL var="updateAssignment">
+   <portlet:param name="action" value="updateAssignment" />
 </portlet:actionURL>
-<portlet:actionURL var="startAssignmentPage">
-	<portlet:param name="action" value="startAssignmentPage" />
+<portlet:actionURL var="startAssignment">
+   <portlet:param name="action" value="startAssignment" />
 </portlet:actionURL>
 
 <%
 	String screenName = themeDisplay.getUser().getScreenName();
+
+	String updateAssignmentError = (String)request.getAttribute("updateAssignmentError");
+	String startAssignmentError = (String)request.getAttribute("startAssignmentError");
 //make sure this user has assignments
 	List<Assignment> relevant = new ArrayList<Assignment>();
 	for(Assignment assignment: assignments) {
@@ -46,10 +49,15 @@
 //show off the lists
 		if(inProgress.isEmpty()) {
 %>
-		<p class="tableReplacement">You aren't currently working on any courses.</p>
+			<p class="tableReplacement">You aren't currently working on any courses.</p>
 <%
 		}
-		else {
+	else {
+		if(updateAssignmentError!=null) {
+%>
+			<p class="error"><%=updateAssignmentError%></p>
+<%
+		}
 %>
 	<div class="tableHolder">
 		<div class="tableTitle">Courses in Progress</div>
@@ -73,10 +81,18 @@
 			    <td> ? </td>
 			    <td><%= assignment.getNotes() %></td>
 			    <td>
-			    	<aui:form name="updateAssignmentPage" action="<%=updateAssignmentPage%>">
-						<aui:input name="requestId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
-						<input id="doWork" type="submit" value="Select"/>
-					</aui:form>
+			    	<div id = "updateAssignmentDialog" title = "Progress Update">
+				    	<aui:form cssClass="inputForm" name="updateAssigment" action="<%=updateAssignment%>">
+							<div cssClass="dialogHeader"><%= assignment.getCourses_title() %></div>
+							<aui:input name="notes" label="Notes" type="textarea" value="<%= assignment.getNotes() %>"/>
+							<aui:input name="progress" label="Progress" type="text" value="?" />
+							<aui:input name="certified" label="Certified" type="checkbox" value="<%= assignment.getCertification() %>"/>
+							<aui:input name="completed" label="Completed" type="checkbox"/>
+							<input type="submit" value="Update"/>
+						</aui:form>
+			    	</div>
+			    	<button id="updateOpener">Update</button>
+			    	
 			    </td>
 			</tr>
 <%
@@ -87,12 +103,17 @@
 	</div>
 <%
 		}
-		if(assigned.isEmpty()) {
+	if(assigned.isEmpty()) {
 %>
-		<p class="tableReplacement">You are not assigned any courses.</p>
+	<p class="tableReplacement">You are not assigned any courses.</p>
+<%
+	}
+	else {
+		if(startAssignmentError!=null) {
+%>
+			<p class="error"><%=startAssignmentError%></p>
 <%
 		}
-		else {
 %>
 	<div class="tableHolder">
 		<div class="tableTitle">Assigned Courses</div>
@@ -114,10 +135,15 @@
 			    <td><%= assignment.getAssignedDate() %></td>
 			    <td><%= assignment.getNotes() %></td>
 			    <td>
-			    	<aui:form name="startAssignmentPage" action="<%=startAssignmentPage%>">
-						<aui:input name="startAssignmentId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
-						<input id="doWork" type="submit" value="Select"/>
-					</aui:form>
+					<div id = "startAssignmentDialog" title = "Start Course">
+						<aui:form cssClass="inputForm" name="startAssigment" action="<%=startAssignment%>">
+							<div cssClass="dialogHeader"><b><%= assignment.getCourses_title() %></b></div>
+							<aui:input name="cost" label="Cost" type="text"/>
+							<aui:input name="notes" label="Notes" type="textarea" value="<%= assignment.getNotes() %>"/>
+							<input type="submit" value="Commence!"/>
+						</aui:form>
+					</div>
+					<button id="startOpener">Start Course</button>
 			    </td>
 			</tr>
 <%

@@ -7,6 +7,7 @@
 		<icon>/icon.png</icon>
 		<configuration-action-class>com.ms3.training.service.controller.ConfigurationActionImpl</configuration-action-class>
 		<header-portlet-css>/css/main.css</header-portlet-css>
+<!--  
 		<header-portlet-css>https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css</header-portlet-css>
 		<header-portlet-css>https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css</header-portlet-css>
 		<header-portlet-javascript>
@@ -15,6 +16,7 @@
         <header-portlet-javascript>
         	https://code.jquery.com/ui/1.10.4/jquery-ui.js
         </header-portlet-javascript>
+-->
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
 		<css-class-wrapper>training-portlet</css-class-wrapper>
 	</portlet>

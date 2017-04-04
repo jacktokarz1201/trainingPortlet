@@ -8,6 +8,7 @@
 <%@ page import= "java.util.ArrayList" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import= "com.liferay.portal.service.UserLocalServiceUtil" %>
+<%@ page import= "com.liferay.portal.service.RoleLocalServiceUtil" %>
 <%@ page import= "com.liferay.portal.kernel.dao.orm.QueryUtil" %>
 <%@ page import= "com.liferay.portal.model.User" %>
 <%@ page import= "com.liferay.portal.theme.ThemeDisplay" %>

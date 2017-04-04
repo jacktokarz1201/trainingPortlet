@@ -74,7 +74,7 @@ public class AssignmentModelImpl extends BaseModelImpl<Assignment>
 			{ "certification", Types.BOOLEAN },
 			{ "assignmentId", Types.BIGINT }
 		};
-	public static final String TABLE_SQL_CREATE = "create table course_Assignment (courses_title VARCHAR(75) null,ms3employeedb_uid VARCHAR(75) null,assignedDate DATE null,startDate DATE null,endDate DATE null,notes VARCHAR(75) null,cost VARCHAR(75) null,certification BOOLEAN,assignmentId LONG not null primary key)";
+	public static final String TABLE_SQL_CREATE = "create table course_Assignment (courses_title VARCHAR(75) null,ms3employeedb_uid VARCHAR(75) null,assignedDate DATE null,startDate DATE null,endDate DATE null,notes VARCHAR(2000) null,cost VARCHAR(75) null,certification BOOLEAN,assignmentId LONG not null primary key)";
 	public static final String TABLE_SQL_DROP = "drop table course_Assignment";
 	public static final String ORDER_BY_JPQL = " ORDER BY assignment.assignmentId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY course_Assignment.assignmentId ASC";

@@ -80,6 +80,13 @@ tbody td {
 	background-color: inherit;
 }
 
+.dialogHeader {
+	vertical-align: middle;
+	text-align: center;
+	font-decoration: underline;
+	font-size: 14px;
+}
+
 
 
 .aui p {

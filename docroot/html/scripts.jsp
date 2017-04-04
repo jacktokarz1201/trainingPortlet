@@ -29,8 +29,25 @@ $(function() {
        $( "#deleteCourseDialog" ).dialog( "open" );
     });
  });
- 
- 
+
+$(function() {
+    $( "#startAssignmentDialog" ).dialog({
+       autoOpen: false,  
+    });
+    $( "#startOpener" ).click(function() {
+       $( "#startAssignmentDialog" ).dialog( "open" );
+    });
+ });
+
+$(function() {
+    $( "#updateAssignmentDialog" ).dialog({
+       autoOpen: false,  
+    });
+    $( "#updateOpener" ).click(function() {
+       $( "#updateAssignmentDialog" ).dialog( "open" );
+    });
+ });
+
 function initialValidation(){
 	document.getElementById("submitCourse").click();
 }

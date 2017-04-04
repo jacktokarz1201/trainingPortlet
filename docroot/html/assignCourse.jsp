@@ -1,4 +1,4 @@
-<%@page import="com.ms3.training.services.service.coursesLocalServiceUtil"%>
+
 <%@include file="/html/init.jsp" %>
 <%@include file="/html/goHomeHeader.jsp" %>
 <%
@@ -108,13 +108,13 @@ else {
 
 	if(inProgress.isEmpty()) {
 %>
-	<p class="tableReplacement">Nobody is currently working on this course</p>
+	<p class="tableReplacement">Nobody is currently working on this course.</p>
 <%
 	}
 	else {
 %>
 	<div class="tableHolder">
-		<div class="tableTitle">Currently Working on this Course</div>
+		<div class="tableTitle">Currently working on this course</div>
 		<table>
 			<thead>
 			<tr>
@@ -129,7 +129,12 @@ else {
 		for(Assignment assignment: inProgress) {
 %>
 			<tr>
-			    <td><%= assignment.getMs3employeedb_uid() %></td>
+			    <td>
+					<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+						<aui:input name="userAssignmentsScreenName" label="" value="<%= assignment.getMs3employeedb_uid() %>" style="display:none;" />
+						<input class="linkImitation" id="doView" type="submit" value="<%= assignment.getMs3employeedb_uid() %>" />
+					</aui:form>
+				</td>
 			    <td><%= assignment.getStartDate() %></td>
 			    <td> ? </td>
 			    <td><%= assignment.getNotes() %></td>
@@ -144,7 +149,7 @@ else {
 		}
 	if(assigned.isEmpty()) {
 %>
-	<p class="tableReplacement">This course is not currently assigned to anybody</p>
+	<p class="tableReplacement">This course is not currently assigned to anybody.</p>
 <%
 	}
 	else {
@@ -163,7 +168,12 @@ else {
 	for(Assignment assignment: assigned) {
 %>
 				<tr>
-					<td><%= assignment.getMs3employeedb_uid() %></td>
+					<td>
+						<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+							<aui:input name="userAssignmentsScreenName" label="" value="<%= assignment.getMs3employeedb_uid() %>" style="display:none;" />
+							<input class="linkImitation" id="doView" type="submit" value="<%= assignment.getMs3employeedb_uid() %>" />
+						</aui:form>
+					</td>
 					<td><%= assignment.getAssignedDate() %></td>
 				</tr>
 <%
@@ -176,7 +186,7 @@ else {
 	}
 	if(requested.isEmpty()) {
 %>
-	<p class="tableReplacement">There are no outstanding requests to take this course</p>
+	<p class="tableReplacement">There are no outstanding requests to take this course.</p>
 <%
 	}
 	else {
@@ -195,7 +205,12 @@ else {
 		for(Assignment assignment: requested) {
 %>
 		<tr>
-			<td><%= assignment.getMs3employeedb_uid() %></td>
+			<td>
+				<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+					<aui:input name="userAssignmentsScreenName" label="" value="<%= assignment.getMs3employeedb_uid() %>" style="display:none;" />
+					<input class="linkImitation" id="doView" type="submit" value="<%= assignment.getMs3employeedb_uid() %>" />
+				</aui:form>
+			</td>
 			<td>
 		    	<aui:form name="approveRequestFromAssign" action="<%=approveRequestFromAssign%>">
 					<aui:input name="requestId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
@@ -234,7 +249,12 @@ else {
 		for(Assignment assignment: completed) {
 %>
 				<tr>
-					<td><%= assignment.getMs3employeedb_uid() %></td>
+					<td>
+						<aui:form name="viewUserAssignments" action="<%= viewUserAssignments %>">
+							<aui:input name="userAssignmentsScreenName" label="" value="<%= assignment.getMs3employeedb_uid() %>" style="display:none;" />
+							<input class="linkImitation" id="doView" type="submit" value="<%= assignment.getMs3employeedb_uid() %>" />
+						</aui:form>
+					</td>
 					<td><%= assignment.getStartDate() %></td>
 					<td><%= assignment.getEndDate() %></td>
 					<td><%= assignment.getCertification() %></td>
@@ -272,7 +292,7 @@ else {
 <%
 for(User user: users) {
 	boolean skip= false;
-	for(Assignment assignment: assignments) {
+	for(Assignment assignment: relevant) {
 		if(user.getScreenName().equals(assignment.getMs3employeedb_uid())) {
 			skip=true;
 		}

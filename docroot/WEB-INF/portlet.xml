@@ -7,7 +7,7 @@
 		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
 		<init-param>
 			<name>contextConfigLocation</name>
-			<value>/WEB-INF/ms3training-portlet.xml</value>
+			<value>/WEB-INF/training-portlet.xml</value>
 		</init-param>
 		<init-param>
 	        <name>config-template</name>
