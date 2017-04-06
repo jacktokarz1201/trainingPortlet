@@ -53,7 +53,7 @@ public class CourseController extends MVCPortlet {
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		String permissableRole = GetterUtil.getString(prefs.getValue("ableRole", ""));
-	System.out.println("Permission Role: "+permissableRole);
+	System.out.println("Necessary Role: "+permissableRole);
 		List<Role> userRoles = RoleLocalServiceUtil.getUserRoles(themeDisplay.getUserId());
 		String hasPermission = "false";
 		for(Role role: userRoles) {
@@ -113,6 +113,7 @@ public class CourseController extends MVCPortlet {
 	@ActionMapping(params = "action=personalAssignmentsPage")
 	public void personalAssignmentsPage(ActionRequest request, ActionResponse response) throws Exception{
 		request.setAttribute("goToPersonalAssignments", "true");
+		System.out.println("PA page!");
 	}
 	
 	@ActionMapping(params = "action=editCoursePage")
@@ -342,10 +343,11 @@ public class CourseController extends MVCPortlet {
 	
 	@ActionMapping(params = "action=updateAssignment")
 	public void updateAssignment(ActionRequest request, ActionResponse response) throws Exception {
-		PortletPreferences prefs = request.getPreferences();
-		String reqId = prefs.getValue("updateAssignmentId", "");
+		String reqId = request.getParameter("assignmentId");
+		System.out.println("Id is: "+reqId);
 		long requestId = Long.parseLong(reqId);
 		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
+		System.out.println("Which is the title: "+assignment.getCourses_title());
 		assignment.setNotes(request.getParameter("notes"));
 		if(request.getParameter("completed").equals("true")) {
 			assignment.setEndDate(setDate());
@@ -360,8 +362,7 @@ public class CourseController extends MVCPortlet {
 	
 	@ActionMapping(params = "action=startAssignment")
 	public void startAssignment(ActionRequest request, ActionResponse response) throws Exception {
-		PortletPreferences prefs = request.getPreferences();
-		String reqId = prefs.getValue("startAssignmentId", "");
+		String reqId = (String)request.getParameter("assignmentId");
 		long requestId = Long.parseLong(reqId);
 		Assignment assignment = AssignmentLocalServiceUtil.getAssignment(requestId);
 		assignment.setCost(request.getParameter("cost"));

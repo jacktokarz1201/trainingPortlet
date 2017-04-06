@@ -84,6 +84,7 @@
 			    	<div id = "updateAssignmentDialog" title = "Progress Update">
 				    	<aui:form cssClass="inputForm" name="updateAssigment" action="<%=updateAssignment%>">
 							<div cssClass="dialogHeader"><%= assignment.getCourses_title() %></div>
+							<aui:input name="assignmentId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
 							<aui:input name="notes" label="Notes" type="textarea" value="<%= assignment.getNotes() %>"/>
 							<aui:input name="progress" label="Progress" type="text" value="?" />
 							<aui:input name="certified" label="Certified" type="checkbox" value="<%= assignment.getCertification() %>"/>
@@ -138,6 +139,7 @@
 					<div id = "startAssignmentDialog" title = "Start Course">
 						<aui:form cssClass="inputForm" name="startAssigment" action="<%=startAssignment%>">
 							<div cssClass="dialogHeader"><b><%= assignment.getCourses_title() %></b></div>
+							<aui:input name="assignmentId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
 							<aui:input name="cost" label="Cost" type="text"/>
 							<aui:input name="notes" label="Notes" type="textarea" value="<%= assignment.getNotes() %>"/>
 							<input type="submit" value="Commence!"/>

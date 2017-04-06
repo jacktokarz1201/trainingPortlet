@@ -3,7 +3,6 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 
-
 <%@ page import="java.util.List" %>
 <%@ page import= "java.util.ArrayList" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
@@ -17,6 +16,7 @@
 <%@ page import= "com.liferay.portal.kernel.util.StringPool"  %>
 <%@ page import= "com.liferay.portal.kernel.util.GetterUtil"%>
 <%@ page import= "com.liferay.portal.model.Role" %>
+
 <%@ page import="com.ms3.training.services.model.Course" %>
 <%@ page import="com.ms3.training.services.model.Assignment" %>
 <%@ page import="com.ms3.training.services.service.CourseLocalServiceUtil" %>
