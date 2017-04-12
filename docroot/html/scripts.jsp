@@ -2,47 +2,26 @@
 
 
 <script>
-$(document).ready(function() {
-	$('table').each(function(){
-	    $(this).addClass('defaultTable display cell-border compact');
-	    $(this).DataTable({
-	    	"pageLength": 5
-	    });
-	});
-} );
+
 
 
 $(function() {
-    $( "#makeCourseDialog" ).dialog({
+    $( ".dialog" ).dialog({
        autoOpen: false,  
     });
+    
     $( "#opener" ).click(function() {
        $( "#makeCourseDialog" ).dialog( "open" );
     });
- });
- 
-$(function() {
-    $( "#deleteCourseDialog" ).dialog({
-       autoOpen: false,  
-    });
+
     $( "#deleteOpener" ).click(function() {
        $( "#deleteCourseDialog" ).dialog( "open" );
     });
- });
 
-$(function() {
-    $( "#startAssignmentDialog" ).dialog({
-       autoOpen: false,  
-    });
     $( "#startOpener" ).click(function() {
        $( "#startAssignmentDialog" ).dialog( "open" );
     });
- });
 
-$(function() {
-    $( "#updateAssignmentDialog" ).dialog({
-       autoOpen: false,  
-    });
     $( "#updateOpener" ).click(function() {
        $( "#updateAssignmentDialog" ).dialog( "open" );
     });
@@ -53,6 +32,13 @@ function initialValidation(){
 }
 function makeSelectHappen(){
 	document.getElementById("submitSelect").click();
+}
+
+function openUpdate(id) {
+	console.log("This is the id "+id);
+	var theID= "#updateAssignment"+id+"Dialog";
+	consle.log(theID);
+	document.getElementById(theID).dialog("open");
 }
 
 </script>

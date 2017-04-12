@@ -81,7 +81,7 @@
 			    <td> ? </td>
 			    <td><%= assignment.getNotes() %></td>
 			    <td>
-			    	<div id = "updateAssignmentDialog" title = "Progress Update">
+			    	<div id = "updateAssignment'+<%= assignment.getAssignmentId() %>+'Dialog" class="dialog" title = "Progress Update">
 				    	<aui:form cssClass="inputForm" name="updateAssigment" action="<%=updateAssignment%>">
 							<div cssClass="dialogHeader"><%= assignment.getCourses_title() %></div>
 							<aui:input name="assignmentId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
@@ -92,8 +92,8 @@
 							<input type="submit" value="Update"/>
 						</aui:form>
 			    	</div>
-			    	<button id="updateOpener">Update</button>
-			    	
+			    	<button id="updateOpener" onclick='openUpdate("<%= assignment.getAssignmentId() %>")'>Update</button>
+			    	<button id="testButton" onclick='openUpdate(555)'>Test Button</button>
 			    </td>
 			</tr>
 <%
@@ -136,7 +136,7 @@
 			    <td><%= assignment.getAssignedDate() %></td>
 			    <td><%= assignment.getNotes() %></td>
 			    <td>
-					<div id = "startAssignmentDialog" title = "Start Course">
+					<div id = "startAssignment'+<%= assignment.getAssignmentId() %>+'Dialog" class="dialog" title = "Start Course">
 						<aui:form cssClass="inputForm" name="startAssigment" action="<%=startAssignment%>">
 							<div cssClass="dialogHeader"><b><%= assignment.getCourses_title() %></b></div>
 							<aui:input name="assignmentId" label="" value="<%= assignment.getAssignmentId() %>" style="display:none;" />
@@ -145,7 +145,7 @@
 							<input type="submit" value="Commence!"/>
 						</aui:form>
 					</div>
-					<button id="startOpener">Start Course</button>
+					<button id="start'+<%= assignment.getAssignmentId() %>+'Opener">Start Course</button>
 			    </td>
 			</tr>
 <%

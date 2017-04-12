@@ -53,6 +53,7 @@ public class CourseController extends MVCPortlet {
 //  {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		String permissableRole = GetterUtil.getString(prefs.getValue("ableRole", ""));
+		String skillsetEndPoint = GetterUtil.getString(prefs.getValue("skillsetEndPoint", ""));
 	System.out.println("Necessary Role: "+permissableRole);
 		List<Role> userRoles = RoleLocalServiceUtil.getUserRoles(themeDisplay.getUserId());
 		String hasPermission = "false";

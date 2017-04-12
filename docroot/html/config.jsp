@@ -9,6 +9,7 @@ String selectedRole = GetterUtil.getString(portletPreferences.getValue("ableRole
 long companyId = themeDisplay.getCompanyId();
 List<Role> roles = RoleLocalServiceUtil.getRoles(companyId);
 
+String skillsetEndPoint = portletPreferences.getValue("skillsetEndPoint", StringPool.BLANK);
 %>
 
 <aui:form action="<%= configurationURL %>" method="post" name="fm">
@@ -23,6 +24,10 @@ List<Role> roles = RoleLocalServiceUtil.getRoles(companyId);
 	}
 %>
     </aui:select>
+    
+    <aui:input name="skillsetEndPoint"  label="Employee Skillset API End Point 
+    	<br><small>Example: http://52.201.204.44:8081/employee-api/employees/skillset/</small>" value="<%= skillsetEndPoint %>" type="text"> 
+    </aui:input>
 
     <aui:button-row>
         <aui:button type="submit" />

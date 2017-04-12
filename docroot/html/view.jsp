@@ -121,7 +121,7 @@ else {
 
 
 
-<div id = "makeCourseDialog" title = "Course Creation">
+<div id = "makeCourseDialog" class="dialog" title = "Course Creation">
 	<aui:form cssClass="inputForm" name="addCourse" action="<%=addCourse%>">
 		<aui:input cssClass="normalInput" name="title" label="Title" type="text"/>
 		<aui:input class="normalInput" name="description" label="Description" type="textarea"/>

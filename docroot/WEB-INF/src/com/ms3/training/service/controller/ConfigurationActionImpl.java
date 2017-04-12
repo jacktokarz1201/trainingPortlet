@@ -20,6 +20,17 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction{
 	    System.out.println("From conf Action");
 	    String somePreferenceKey = prefs.getValue(
 	        "configKey", "true");
+	    
+	    /*
+	    String ableRole = ParamUtil.getString(actionRequest, "ableRole");
+	    String skillsetEndPoint = ParamUtil.getString(actionRequest, "skillsetEndPoint");
+	    
+	    System.out.println("From conf action we got ableRole "+ableRole+", and skill point "+skillsetEndPoint);
+	    
+	    prefs.setValue("ableRole", ableRole);
+	    prefs.setValue("skillsetEndPoint", skillsetEndPoint);
+	    prefs.store();
+	    */
 
 	    // Add any preference processing here.
 	}

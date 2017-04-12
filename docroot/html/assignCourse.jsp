@@ -67,7 +67,7 @@
 </table>
 </div>
 
-<div id = "deleteCourseDialog" title = "Are You Sure?">
+<div id = "deleteCourseDialog" class="dialog" title = "Are You Sure?">
 	<p><aui:a href= "<%= deleteCourse %>">Yes!</aui:a></p>
 </div>
 	
